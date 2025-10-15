@@ -1,0 +1,83 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
+ENV/
+env.bak/
+venv.bak/
+
+# ---- FastAPI / Pydantic / Alembic ----
+# Alembic migrations cache
+alembic/versions/__pycache__/
+alembic/*.pyc
+
+# Ignore SQLite database if used locally
+*.db
+*.sqlite3
+
+# ---- Logs ----
+*.log
+logs/
+*.pid
+*.seed
+*.cover
+
+# ---- Unit test / Coverage ----
+htmlcov/
+.tox/
+.nox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# ---- PyInstaller ----
+*.manifest
+*.spec
+dist/
+build/
+
+# ---- IDEs / Editors ----
+.vscode/
+.idea/
+*.iml
+*.sublime-workspace
+*.sublime-project
+
+# ---- OS files ----
+.DS_Store
+Thumbs.db
+
+# ---- Docker ----
+# Docker build files and volumes
+*.tar
+docker-compose.override.yml
+
+# ---- Environment & Config ----
+# Environment files (secrets, credentials)
+.env
+.env.*
+!.env.example
+
+# ---- Misc ----
+# Local development data, temp folders
+tmp/
+data/
+uploads/
+media/
+__pypackages__/
+
+# ---- Node (if using frontend with FastAPI) ----
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
