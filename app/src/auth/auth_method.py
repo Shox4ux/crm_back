@@ -1,20 +1,11 @@
 from datetime import timedelta, timezone, datetime
-
 from jwt.exceptions import InvalidTokenError
-
 import jwt
 from pwdlib import PasswordHash
-from dotenv import load_dotenv
 from app.src.auth.auth_schema import TokenPayload, TokenRead
-import os
+from app.settings import Settings
 
-
-load_dotenv(os.getenv("ENV_FILE"))
-
-
-EXPIRES = int(os.getenv("EXPIRES"))
-ALGORITHM = os.getenv("ALGORITHM")
-TOKEN_KEY = os.getenv("TOKEN_KEY").strip()
+sttngs = Settings()
 
 
 pwd_context = PasswordHash.recommended()
@@ -29,13 +20,13 @@ def verify_key(plain: str, hashed: str) -> bool:
 
 
 def create_access_token(role: int, id: int) -> TokenRead:
-    expire: datetime = datetime.now(timezone.utc) + timedelta(minutes=EXPIRES)
+    expire: datetime = datetime.now(timezone.utc) + timedelta(minutes=sttngs.EXPIRES)
     to_encode = {"role": role, "user_id": id, "exp": int(expire.timestamp())}
     try:
-        token = jwt.encode(to_encode, TOKEN_KEY, algorithm=ALGORITHM)
+        token = jwt.encode(to_encode, sttngs.TOKEN_KEY, algorithm=sttngs.ALGORITHM)
 
     except Exception:
-        raise Exception()
+        raise InvalidTokenError()
 
     return TokenRead(
         access_token=token,
@@ -46,7 +37,7 @@ def create_access_token(role: int, id: int) -> TokenRead:
 
 def decode_access_token(token: str) -> TokenPayload:
     try:
-        decoded = jwt.decode(token, TOKEN_KEY, algorithms=[ALGORITHM])
+        decoded = jwt.decode(token, sttngs.TOKEN_KEY, algorithms=[sttngs.TOKEN_KEY])
         return TokenPayload(**decoded)
     except jwt.ExpiredSignatureError:
         print("Token has expired.")
