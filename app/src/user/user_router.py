@@ -1,0 +1,39 @@
+from fastapi import APIRouter, status, Depends, Response
+from .user_dao import UserDao, get_user_dao
+from typing import Optional
+from app.utils.custom_exceptions import ItemNotFound
+from app.src.user.user_schema import UserRead, UserWrite
+from app.src.auth.auth_method import get_pass_hashed
+
+router = APIRouter(prefix="/users", tags=["user"])
+
+
+@router.get("/get_by_username/{uname}", response_model=Optional[UserRead])
+async def get_by_username(uname: str, dao: UserDao = Depends(get_user_dao)):
+    user = await dao.get_by_username(uname)
+    if not user:
+        raise ItemNotFound(item_id=uname, item="user")
+    return user
+
+
+@router.get("/get_all", response_model=Optional[list[UserRead]])
+async def get_all(dao: UserDao = Depends(get_user_dao)):
+    users = await dao.get_all()
+    return users
+
+
+@router.post("/create", response_model=UserRead)
+async def create(data: UserWrite, dao: UserDao = Depends(get_user_dao)):
+    data.password = get_pass_hashed(data.password)
+    user = await dao.create(data)
+    if not user:
+        raise Exception()
+    return user
+
+
+@router.delete("/delete/{id}")
+async def delete(id: int, dao: UserDao = Depends(get_user_dao)):
+    result = await dao.delete(id)
+    if not result:
+        raise Exception()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
