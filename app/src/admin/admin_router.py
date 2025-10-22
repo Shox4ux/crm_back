@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, Depends, Response
 from .admin_dao import AdminDao, get_admin_dao
 from typing import Optional
 from app.utils.custom_exceptions import ItemNotFound
-from app.src.admin.admin_schema import AdminRead, AdminWrite
+from app.src.admin.admin_schema import AdminRead, AdminWrite, AdminBase
 
 router = APIRouter(prefix="/admins", tags=["admin"])
 
@@ -21,7 +21,7 @@ async def get_all(dao: AdminDao = Depends(get_admin_dao)):
     return admins
 
 
-@router.post("/create", response_model=AdminRead)
+@router.post("/create", response_model=AdminBase)
 async def create(data: AdminWrite, dao: AdminDao = Depends(get_admin_dao)):
     admin = await dao.create(data)
     if not admin:
