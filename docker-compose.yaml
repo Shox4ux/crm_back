@@ -10,7 +10,7 @@ services:
       SYNC_DATABASE_URL: ${SYNC_DATABASE_URL}
       PYTHONPATH: /app    # new_bot will be mounted at /app
     ports:
-      - "8000:8000"
+      - "8001:8000"
     volumes:
       - ./app:/app        # mount your new code as /app
 
@@ -22,7 +22,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5433:5432"
+      - "5434:5432"
     volumes:
       - crm_data:/var/lib/postgresql/data
 

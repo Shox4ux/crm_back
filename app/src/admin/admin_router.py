@@ -9,7 +9,7 @@ router = APIRouter(prefix="/admins", tags=["admin"])
 
 @router.get("/get_by_id/{id}", response_model=Optional[AdminRead])
 async def get_by_id(id: int, dao: AdminDao = Depends(get_admin_dao)):
-    admin = await dao.get_one(id)
+    admin = await dao.get_one_by_uid(id)
     if not admin:
         raise ItemNotFound(item_id=id, item="admin")
     return admin

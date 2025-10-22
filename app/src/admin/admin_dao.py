@@ -3,6 +3,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from .admin_schema import AdminWrite, AdminRead
 from sqlalchemy import select, update, delete
+from sqlalchemy.orm import selectinload, joinedload
 from app.src.admin.admin_model import Admin
 from app.utils.custom_exceptions import ItemNotFound
 
@@ -12,16 +13,16 @@ class AdminDao:
     def __init__(self, db: AsyncSession):
         self.db: AsyncSession = db
 
-    async def get_one(self, id: int) -> AdminRead | None:
-        result = await self.db.execute(select(Admin).where(Admin.id == id))
-        return result.scalar_one_or_none()
-
-    async def get_secret_one(self, secret: str) -> AdminRead | None:
-        result = await self.db.execute(select(Admin).where(Admin.secret_name == secret))
+    async def get_one_by_uid(self, user_id: int) -> AdminRead | None:
+        result = await self.db.execute(
+            select(Admin)
+            .options(selectinload(Admin.user))
+            .where(Admin.user_id == user_id)
+        )
         return result.scalar_one_or_none()
 
     async def get_all(self) -> list[AdminRead] | None:
-        result = await self.db.execute(select(Admin))
+        result = await self.db.execute(select(Admin).options(selectinload(Admin.user)))
         return result.scalars().all()
 
     async def create(self, data: AdminWrite) -> Admin:

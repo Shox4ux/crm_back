@@ -6,7 +6,6 @@ from app.src.product.product_schema import ProductRead
 
 
 class WarehouseProdBase(BaseModel):
-
     id: int
     created_at: datetime
 

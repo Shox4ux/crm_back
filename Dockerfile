@@ -6,7 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # Set work directory inside container
-WORKDIR /pro
+WORKDIR /crm
 
 
 # Install system dependencies
@@ -18,13 +18,11 @@ RUN apt-get update && \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the project files
-COPY app/ ./app 
 
-COPY alembic/ ./alembic
+COPY alembic_pro/ ./alembic
 COPY /.env .env
 COPY alembic.ini ./alembic.ini
 
 # Run Alembic migrations before starting the app
-# Replace `main.py` with your actual entry point
-CMD ["sh", "-c", "uvicorn app/main:app --reload"]
+COPY ./app /crm/app
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

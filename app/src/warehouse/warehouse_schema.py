@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
-from app.src.product.product_schema import ProductRead
+from app.src.warehouse_product.warehouse_product_schema import WarehouseProdRead
 
 # warehouse_id = Column(Integer, ForeignKey(f"{tbnames.WAREHOUSE}.id"))
 # product_id = Column(Integer, ForeignKey(f"{tbnames.PRODUCT}.id"))

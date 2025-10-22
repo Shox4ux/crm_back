@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from app.src.user.user_schema import UserRead
 
 
 class AdminBase(BaseModel):
@@ -13,6 +14,7 @@ class AdminWrite(AdminBase):
 
 class AdminRead(AdminBase):
     id: int
+    user: UserRead
     created_at: datetime
 
     class Config:

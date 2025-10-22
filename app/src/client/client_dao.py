@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .client_schema import ClientRead, ClientWrite
 from sqlalchemy import select, update, delete
 from .client_model import Client
+from sqlalchemy.orm import selectinload, joinedload
 from app.utils.custom_exceptions import ItemNotFound
 from fastapi.security import OAuth2PasswordBearer
 from typing import Annotated
@@ -34,7 +35,11 @@ class ClientDao:
         self.db: AsyncSession = db
 
     async def get_one(self, user_id: int) -> ClientRead | None:
-        result = await self.db.execute(select(Client).where(Client.user_id == user_id))
+        result = await self.db.execute(
+            select(Client)
+            .options(selectinload(Client.user), selectinload(Client.products))
+            .where(Client.user_id == user_id)
+        )
         return result.scalar_one_or_none()
 
     async def get_secret_one(self, id: int) -> ClientRead | None:
@@ -42,7 +47,11 @@ class ClientDao:
         return result.scalar_one_or_none()
 
     async def get_all(self) -> list[ClientRead] | None:
-        result = await self.db.execute(select(Client))
+        result = await self.db.execute(
+            select(Client).options(
+                selectinload(Client.user), selectinload(Client.products)
+            )
+        )
         return result.scalars().all()
 
     async def create(self, data: ClientWrite) -> Client:
