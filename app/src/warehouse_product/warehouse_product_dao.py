@@ -1,7 +1,7 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .warehouse_product_schema import WarehouseProdRead, WarehouseProdWrite
+from .warehouse_product_schema import WarehProdRead, WarehProdWrite
 from sqlalchemy import select, update, delete
 from app.src.warehouse_product.warehouse_product_model import WarehouseProduct
 from sqlalchemy.orm import selectinload, joinedload
@@ -13,33 +13,27 @@ class WarehouseProductDao:
     def __init__(self, db: AsyncSession):
         self.db: AsyncSession = db
 
-    async def get_one(self, id: int) -> WarehouseProdRead | None:
+    async def get_one(self, id: int) -> WarehProdRead | None:
         result = await self.db.execute(
             select(WarehouseProduct)
             .options(selectinload(WarehouseProduct.product))
             .where(WarehouseProduct.id == id)
         )
-        return result.unique().scalar_one_or_none()
+        return result.scalar_one_or_none()
 
-    async def get_all(self) -> list[WarehouseProdRead] | None:
+    async def get_all(self) -> list[WarehProdRead] | None:
         result = await self.db.execute(
-            select(WarehouseProduct).options(joinedload(WarehouseProduct.product))
+            select(WarehouseProduct).options(selectinload(WarehouseProduct.product))
         )
-        return result.unique().scalars().all()
+        return result.scalars().all()
 
-    async def create(self, data: WarehouseProdWrite) -> WarehouseProduct:
+    async def create(self, data: WarehProdWrite) -> WarehouseProduct:
         new = WarehouseProduct(**data.model_dump())
         self.db.add(new)
 
         await self.db.commit()
         await self.db.refresh(new)
-
-        result = await self.db.execute(
-            select(WarehouseProduct)
-            .options(selectinload(WarehouseProduct.product))
-            .where(WarehouseProduct.id == new.id)
-        )
-        return result.scalars().first()
+        return new
 
     async def delete(self, id: int) -> bool:
         result = await self.db.execute(

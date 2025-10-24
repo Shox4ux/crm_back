@@ -2,8 +2,8 @@ from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from .admin_schema import AdminWrite, AdminRead
-from sqlalchemy import select, update, delete
-from sqlalchemy.orm import selectinload, joinedload
+from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from app.src.admin.admin_model import Admin
 from app.utils.custom_exceptions import ItemNotFound
 
@@ -32,11 +32,11 @@ class AdminDao:
         await self.db.refresh(new)
         return new
 
-    async def delete(self, id: int) -> bool:
-        result = await self.db.execute(select(Admin).where(Admin.id == id))
+    async def delete(self, user_id: int) -> bool:
+        result = await self.db.execute(select(Admin).where(Admin.user_id == user_id))
         admin = result.scalar_one_or_none()
         if not admin:
-            raise ItemNotFound(item_id=id, item="admin")
+            raise ItemNotFound(item_id=user_id, item="admin")
 
         await self.db.delete(admin)
         await self.db.commit()

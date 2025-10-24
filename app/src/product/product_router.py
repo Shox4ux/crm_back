@@ -3,7 +3,7 @@ from .product_dao import ProductDao, get_prod_dao
 from typing import Optional
 from app.utils.custom_exceptions import ItemNotFound
 from app.src.product.product_schema import ProductRead, ProductWrite
-from app.utils.img_uploader import img_uploader
+from app.utils.img_uploader import img_uploader, delete_image
 
 router = APIRouter(prefix="/products", tags=["product"])
 
@@ -51,6 +51,12 @@ async def create(
 
 @router.delete("/delete/{id}")
 async def delete(id: int, dao: ProductDao = Depends(get_prod_dao)):
+    prod = await dao.get_one(id)
+
+    if not prod:
+        raise ItemNotFound(item_id=id, item="product")
+
+    delete_image(image_path=prod.img_url)
     result = await dao.delete(id)
 
     if not result:

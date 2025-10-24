@@ -7,11 +7,11 @@ from app.src.admin.admin_schema import AdminRead, AdminWrite, AdminBase
 router = APIRouter(prefix="/admins", tags=["admin"])
 
 
-@router.get("/get_by_id/{id}", response_model=Optional[AdminRead])
-async def get_by_id(id: int, dao: AdminDao = Depends(get_admin_dao)):
-    admin = await dao.get_one_by_uid(id)
+@router.get("/get_by_user_id/{user_id}", response_model=Optional[AdminRead])
+async def get_by_id(user_id: int, dao: AdminDao = Depends(get_admin_dao)):
+    admin = await dao.get_one_by_uid(user_id)
     if not admin:
-        raise ItemNotFound(item_id=id, item="admin")
+        raise ItemNotFound(item_id=user_id, item="admin")
     return admin
 
 
@@ -29,9 +29,9 @@ async def create(data: AdminWrite, dao: AdminDao = Depends(get_admin_dao)):
     return admin
 
 
-@router.delete("/delete/{id}")
-async def delete(id: int, dao: AdminDao = Depends(get_admin_dao)):
-    result = await dao.delete(id)
+@router.delete("/delete/{user_id}")
+async def delete(user_id: int, dao: AdminDao = Depends(get_admin_dao)):
+    result = await dao.delete(user_id)
     if not result:
         raise Exception()
     return Response(status_code=status.HTTP_204_NO_CONTENT)

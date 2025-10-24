@@ -4,6 +4,7 @@ import jwt
 from pwdlib import PasswordHash
 from app.src.auth.auth_schema import TokenPayload, TokenRead
 from app.settings import Settings
+from app.utils.custom_exceptions import InvalidToken, TokenExpired, ServerError
 
 sttngs = Settings()
 
@@ -20,7 +21,7 @@ def verify_key(plain: str, hashed: str) -> bool:
 
 
 def create_access_token(role: int, id: int) -> TokenRead:
-    expire: datetime = datetime.now(timezone.utc) + timedelta(minutes=sttngs.EXPIRES)
+    expire: datetime = datetime.now(timezone.utc) + timedelta(seconds=1)
     to_encode = {"role": role, "user_id": id, "exp": int(expire.timestamp())}
     try:
         token = jwt.encode(to_encode, sttngs.TOKEN_KEY, algorithm=sttngs.ALGORITHM)
@@ -36,12 +37,16 @@ def create_access_token(role: int, id: int) -> TokenRead:
 
 
 def decode_access_token(token: str) -> TokenPayload:
+    print(f"decoded {token}")
+
     try:
-        decoded = jwt.decode(token, sttngs.TOKEN_KEY, algorithms=[sttngs.TOKEN_KEY])
+        decoded = jwt.decode(token, sttngs.TOKEN_KEY, algorithms=[sttngs.ALGORITHM])
+        # print(f"decoded {decoded}")
+
         return TokenPayload(**decoded)
     except jwt.ExpiredSignatureError:
-        print("Token has expired.")
+        raise TokenExpired()
     except jwt.InvalidSignatureError:
-        print("Invalid signature. Wrong secret key or algorithm.")
-    except Exception as e:
-        print("Other error:", e)
+        raise InvalidToken()
+    except InvalidTokenError:
+        raise ServerError

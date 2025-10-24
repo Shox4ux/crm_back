@@ -13,12 +13,15 @@ class ClientProdRead(BaseModel):
 
 
 class ClientBase(BaseModel):
-    user_id: int
     phone: str
     address: str
 
+    class Config:
+        from_attributes = True
+
 
 class ClientWrite(ClientBase):
+    user_id: int
     pass
 
 

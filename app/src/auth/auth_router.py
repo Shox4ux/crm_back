@@ -33,6 +33,10 @@ async def token(token: str, dao: UserDao = Depends(get_user_dao)):
 
     payload: TokenPayload = mtds.decode_access_token(token)
 
+    if not payload:
+        print(payload)
+        raise Exception()
+
     user: User = await dao.get_by_id(id=payload.user_id)
 
     return user

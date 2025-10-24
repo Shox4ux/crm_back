@@ -12,7 +12,7 @@ class AdminWrite(AdminBase):
     pass
 
 
-class AdminRead(AdminBase):
+class AdminRead(BaseModel):
     id: int
     user: UserRead
     created_at: datetime

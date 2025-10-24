@@ -7,6 +7,9 @@ from .src.product import product_router
 from .src.admin import admin_router
 from .src.client import client_router
 from .src.user import user_router
+from .src.order import order_router
+from .src.order_product import order_product_router
+from .src.warehouse_product import warehouse_product_router
 
 
 from .src.auth import auth_router
@@ -25,7 +28,7 @@ app.add_middleware(
 
 app.add_exception_handler(Exception, global_exception_handler)
 
-app.mount("/uploads", StaticFiles(directory="app/uploads"), name="uploads")
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 
 @app.get("/")
@@ -34,8 +37,15 @@ async def main():
 
 
 app.include_router(auth_router.router)
+app.include_router(user_router.router)
+
 app.include_router(admin_router.router)
 app.include_router(client_router.router)
-app.include_router(user_router.router)
-app.include_router(warehouse_router.router)
+
 app.include_router(product_router.router)
+
+app.include_router(warehouse_router.router)
+app.include_router(warehouse_product_router.router)
+
+app.include_router(order_router.router)
+app.include_router(order_product_router.router)

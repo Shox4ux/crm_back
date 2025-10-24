@@ -5,7 +5,7 @@ from datetime import datetime
 from app.src.product.product_schema import ProductRead
 
 
-class WarehouseProdBase(BaseModel):
+class WarehProdBase(BaseModel):
     id: int
     created_at: datetime
 
@@ -13,24 +13,21 @@ class WarehouseProdBase(BaseModel):
         from_attributes = True
 
 
-class WarehouseProdWrite(BaseModel):
+class WarehProdWrite(BaseModel):
     product_id: int
     status: int
-    arrives_at: Optional[datetime]
     quantity: int
 
     class Config:
         from_attributes = True
 
 
-class WarehouseProdRead(BaseModel):
+class WarehProdRead(WarehProdBase):
 
-    id: int
     product: Optional[ProductRead]
     status: int
     arrives_at: Optional[datetime]
     quantity: int
-    created_at: datetime
 
     class Config:
         from_attributes = True

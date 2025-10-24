@@ -9,7 +9,7 @@ router = APIRouter(prefix="/clients", tags=["client"])
 
 @router.get("/get_by_user_id/{user_id}", response_model=Optional[ClientRead])
 async def get_by_id(user_id: int, dao: ClientDao = Depends(get_c_dao)):
-    client = await dao.get_one(user_id)
+    client = await dao.get_by_uid(user_id)
     if not client:
         raise ItemNotFound(item_id=user_id, item="client")
     return client
@@ -29,9 +29,9 @@ async def create(data: ClientWrite, dao: ClientDao = Depends(get_c_dao)):
     return warehouse
 
 
-@router.delete("/delete/{id}")
-async def delete(id: int, dao: ClientDao = Depends(get_c_dao)):
-    result = await dao.delete(id)
+@router.delete("/delete/{user_id}")
+async def delete(user_id: int, dao: ClientDao = Depends(get_c_dao)):
+    result = await dao.delete(user_id)
     if not result:
         raise Exception()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
