@@ -28,7 +28,7 @@ app.add_middleware(
 
 app.add_exception_handler(Exception, global_exception_handler)
 
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+app.mount("/uploads", StaticFiles(directory="app/uploads"), name="uploads")
 
 
 @app.get("/")

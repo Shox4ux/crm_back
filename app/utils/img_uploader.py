@@ -4,7 +4,7 @@ import shutil
 import uuid
 import re
 
-UPLOAD_DIR = Path("uploads/product_imgs")
+UPLOAD_DIR = Path("app/uploads/product_imgs")
 
 
 def img_uploader(img: UploadFile) -> str | None:
