@@ -21,7 +21,7 @@ def verify_key(plain: str, hashed: str) -> bool:
 
 
 def create_access_token(role: int, id: int) -> TokenRead:
-    expire: datetime = datetime.now(timezone.utc) + timedelta(seconds=1)
+    expire: datetime = datetime.now(timezone.utc) + timedelta(minutes=sttngs.EXPIRES)
     to_encode = {"role": role, "user_id": id, "exp": int(expire.timestamp())}
     try:
         token = jwt.encode(to_encode, sttngs.TOKEN_KEY, algorithm=sttngs.ALGORITHM)

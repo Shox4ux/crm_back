@@ -14,6 +14,7 @@ class AdminWrite(AdminBase):
 
 class AdminRead(BaseModel):
     id: int
+    permission: int
     user: UserRead
     created_at: datetime
 
