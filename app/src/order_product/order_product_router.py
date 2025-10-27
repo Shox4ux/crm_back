@@ -33,9 +33,9 @@ async def create(data: OrderProdWrite, dao: OrderProductDao = Depends(get_orp_da
     return warehouse_prod
 
 
-@router.delete("/delete/{id}")
+@router.delete("/delete/{id}", status_code=status.HTTP_200_OK)
 async def delete(id: int, dao: OrderProductDao = Depends(get_orp_dao)):
     result = await dao.delete(id)
     if not result:
         raise Exception()
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return {"message": "Successfully deleted"}

@@ -49,7 +49,7 @@ async def create(
     return product
 
 
-@router.delete("/delete/{id}")
+@router.delete("/delete/{id}", status_code=status.HTTP_200_OK)
 async def delete(id: int, dao: ProductDao = Depends(get_prod_dao)):
     prod = await dao.get_one(id)
 
@@ -62,4 +62,4 @@ async def delete(id: int, dao: ProductDao = Depends(get_prod_dao)):
     if not result:
         raise Exception()
 
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return {"message": "Successfully deleted"}

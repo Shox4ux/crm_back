@@ -19,7 +19,13 @@ async def get_by_id(id: int, dao: WarehouseProductDao = Depends(get_wp_dao)):
     return warehouse_prod
 
 
-@router.get("/get_all", response_model=Optional[list[WarehProdRead]])
+@router.get("/get_all/{ware_id}", response_model=Optional[list[WarehProdRead]])
+async def get_all(ware_id: int, dao: WarehouseProductDao = Depends(get_wp_dao)):
+    warehouse_prods = await dao.get_all_w_id(ware_id)
+    return warehouse_prods
+
+
+@router.get("/get_all/", response_model=Optional[list[WarehProdRead]])
 async def get_all(dao: WarehouseProductDao = Depends(get_wp_dao)):
     warehouse_prods = await dao.get_all()
     return warehouse_prods
@@ -33,9 +39,9 @@ async def create(data: WarehProdWrite, dao: WarehouseProductDao = Depends(get_wp
     return warehouse_prod
 
 
-@router.delete("/delete/{id}")
+@router.delete("/delete/{id}", status_code=status.HTTP_200_OK)
 async def delete(id: int, dao: WarehouseProductDao = Depends(get_wp_dao)):
     result = await dao.delete(id)
     if not result:
         raise Exception()
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return {"message": "Successfully deleted"}

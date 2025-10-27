@@ -29,9 +29,9 @@ async def create(data: AdminWrite, dao: AdminDao = Depends(get_admin_dao)):
     return admin
 
 
-@router.delete("/delete/{user_id}")
+@router.delete("/delete/{user_id}", status_code=status.HTTP_200_OK)
 async def delete(user_id: int, dao: AdminDao = Depends(get_admin_dao)):
     result = await dao.delete(user_id)
     if not result:
         raise Exception()
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return {"message": "Successfully deleted"}

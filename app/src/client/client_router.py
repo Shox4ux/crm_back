@@ -29,9 +29,9 @@ async def create(data: ClientWrite, dao: ClientDao = Depends(get_c_dao)):
     return warehouse
 
 
-@router.delete("/delete/{user_id}")
+@router.delete("/delete/{user_id}", status_code=status.HTTP_200_OK)
 async def delete(user_id: int, dao: ClientDao = Depends(get_c_dao)):
     result = await dao.delete(user_id)
     if not result:
         raise Exception()
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return {"message": "Successfully deleted"}
