@@ -18,6 +18,7 @@ class UserRead(BaseModel):
 class UserWrite(BaseModel):
     username: str
     password: str
+    hashed_password: Optional[str]
     role: int
 
 

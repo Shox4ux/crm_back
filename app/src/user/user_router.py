@@ -21,7 +21,7 @@ async def get_all(dao: UserDao = Depends(get_user_dao)):
 
 @router.post("/create", response_model=UserRead)
 async def create(data: UserWrite, dao: UserDao = Depends(get_user_dao)):
-    data.password = get_pass_hashed(data.password)
+    data.hashed_password = get_pass_hashed(data.password)
     user = await dao.create(data)
     if not user:
         raise Exception()
@@ -30,6 +30,9 @@ async def create(data: UserWrite, dao: UserDao = Depends(get_user_dao)):
 
 @router.patch("/update/{id}", response_model=Optional[UserRead])
 async def get_by_username(id: int, d: UserUpdt, dao: UserDao = Depends(get_user_dao)):
+    if d.password:
+        d.hashed_password = get_pass_hashed(d.password)
+
     user = await dao.update(id, d)
     return user
 
