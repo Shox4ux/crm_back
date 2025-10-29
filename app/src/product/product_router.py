@@ -24,16 +24,18 @@ async def get_all(dao: ProductDao = Depends(get_prod_dao)):
 
 @router.post("/create", response_model=ProductRead)
 async def create(
-    img: UploadFile,
+    img: Optional[UploadFile],
     name: str = Form(...),
     buy_price: float = Form(...),
     sell_price: float = Form(...),
     dao: ProductDao = Depends(get_prod_dao),
 ):
+    if img:
+        img_path = img_uploader(img)
 
-    img_path = img_uploader(img)
-    if not img_path:
-        raise Exception()
+        if not img_path:
+
+            raise Exception()
 
     data = ProductWrite(
         img_url=img_path,

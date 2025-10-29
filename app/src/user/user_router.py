@@ -1,8 +1,7 @@
-from fastapi import APIRouter, status, Depends, Response
+from fastapi import APIRouter, status, Depends
 from .user_dao import UserDao, get_user_dao
 from typing import Optional
-from app.utils.custom_exceptions import ItemNotFound
-from app.src.user.user_schema import UserRead, UserWrite
+from app.src.user.user_schema import UserRead, UserWrite, UserUpdt
 from app.src.auth.auth_method import get_pass_hashed
 
 router = APIRouter(prefix="/users", tags=["user"])
@@ -11,8 +10,6 @@ router = APIRouter(prefix="/users", tags=["user"])
 @router.get("/get_by_username/{uname}", response_model=Optional[UserRead])
 async def get_by_username(uname: str, dao: UserDao = Depends(get_user_dao)):
     user = await dao.get_by_username(uname)
-    if not user:
-        raise ItemNotFound(item_id=uname, item="user")
     return user
 
 
@@ -28,6 +25,12 @@ async def create(data: UserWrite, dao: UserDao = Depends(get_user_dao)):
     user = await dao.create(data)
     if not user:
         raise Exception()
+    return user
+
+
+@router.patch("/update/{id}", response_model=Optional[UserRead])
+async def get_by_username(id: int, d: UserUpdt, dao: UserDao = Depends(get_user_dao)):
+    user = await dao.update(id, d)
     return user
 
 

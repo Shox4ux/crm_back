@@ -12,6 +12,12 @@ class ClientProdRead(BaseModel):
     created_at: datetime
 
 
+class ClientProdWrite(BaseModel):
+    client_id: int
+    product_id: int
+    custom_price: float
+
+
 class ClientBase(BaseModel):
     phone: str
     address: str

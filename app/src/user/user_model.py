@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Boolean
 from app.models.common_col import ComCharModel
 from app.utils import table_names as tbnames
 
@@ -9,3 +9,5 @@ class User(ComCharModel):
     role = Column(Integer, nullable=False)
     username = Column(String(225), nullable=False)
     password = Column(String(225), nullable=False)
+    hashed_password = Column(String(225), nullable=False)
+    is_active = Column(Boolean, default=True)

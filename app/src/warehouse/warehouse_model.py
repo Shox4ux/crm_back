@@ -9,4 +9,9 @@ class Warehouse(ComCharModel):
 
     name = Column(String(225), nullable=False)
     address = Column(String(225), nullable=True)
-    products = relationship("WarehouseProduct", uselist=True)
+    products = relationship(
+        "WarehouseProduct",
+        uselist=True,
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )

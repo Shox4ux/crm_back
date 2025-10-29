@@ -7,7 +7,9 @@ from app.models.common_col import ComCharModel
 class WarehouseProduct(ComCharModel):
     __tablename__ = tbnames.WAREHOUSE_PRO
 
-    warehouse_id = Column(Integer, ForeignKey(f"{tbnames.WAREHOUSE}.id"))
+    warehouse_id = Column(
+        Integer, ForeignKey(f"{tbnames.WAREHOUSE}.id", ondelete="CASCADE")
+    )
     product_id = Column(Integer, ForeignKey(f"{tbnames.PRODUCT}.id"))
     product = relationship("Product", uselist=False)
     status = Column(Integer, nullable=False)

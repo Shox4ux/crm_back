@@ -15,6 +15,11 @@ class AdminPermission(Enum):
 class Admin(ComCharModel):
     __tablename__ = tbnames.ADMIN
 
-    user_id = Column(Integer, ForeignKey(f"{tbnames.USER}.id"))
-    user = relationship("User", uselist=False)
+    user_id = Column(Integer, ForeignKey(f"{tbnames.USER}.id", ondelete="CASCADE"))
+    user = relationship(
+        "User",
+        uselist=False,
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
     permission = Column(Integer, nullable=False, default=AdminPermission.SUB.value)

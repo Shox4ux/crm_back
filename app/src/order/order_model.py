@@ -9,7 +9,12 @@ class Order(ComCharModel):
 
     client_id = Column(Integer, ForeignKey(f"{tbnames.CLIENT}.id"))
     client = relationship("Client", uselist=False)
-    order_products = relationship("OrderProduct", uselist=True)
+    order_products = relationship(
+        "OrderProduct",
+        uselist=True,
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
     status = Column(Integer, nullable=False)
     paid_amount = Column(Float, nullable=False)
     client_note = Column(String(425), nullable=True)
