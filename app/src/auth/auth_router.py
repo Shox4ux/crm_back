@@ -5,7 +5,7 @@ from app.src.user.user_model import User
 from app.src.user.user_schema import UserRead
 from app.src.auth import auth_method as mtds
 from enum import Enum
-from app.utils.custom_exceptions import AuthError
+from app.utils.custom_exceptions import AuthError, InactiveUser
 
 
 class AuthRole(Enum):
@@ -22,7 +22,7 @@ async def login_for_access_token(data: AuthData, dao: UserDao = Depends(get_user
 
     if not user:
         raise AuthError()
-    if not mtds.verify_key("1234", user.password):
+    if not mtds.verify_key(data.password, user.hashed_password):
         raise AuthError()
 
     return mtds.create_access_token(data.role, user.id)
@@ -34,9 +34,11 @@ async def token(token: str, dao: UserDao = Depends(get_user_dao)):
     payload: TokenPayload = mtds.decode_access_token(token)
 
     if not payload:
-        print(payload)
         raise Exception()
 
     user: User = await dao.get_by_id(id=payload.user_id)
+
+    if not user.is_active:
+        raise InactiveUser()
 
     return user

@@ -8,6 +8,7 @@ class UserRead(BaseModel):
     username: str
     role: int
     password: str
+    hashed_password: Optional[str]
     is_active: bool
     created_at: datetime
 

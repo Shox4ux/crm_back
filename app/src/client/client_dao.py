@@ -1,7 +1,13 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .client_schema import ClientRead, ClientWrite, ClientProdWrite
+from .client_schema import (
+    ClientRead,
+    ClientWrite,
+    ClientProdWrite,
+    ClientUpdt,
+    ClientProdUpdt,
+)
 from sqlalchemy import select, update, delete
 from .client_model import Client, ClientProduct
 from sqlalchemy.orm import selectinload, joinedload
@@ -40,7 +46,8 @@ class ClientDao:
     async def get_all(self) -> list[ClientRead] | None:
         result = await self.db.execute(
             select(Client).options(
-                selectinload(Client.user), selectinload(Client.products)
+                selectinload(Client.user),
+                selectinload(Client.products).selectinload(ClientProduct.product),
             )
         )
         return result.scalars().all()
@@ -58,15 +65,41 @@ class ClientDao:
         await self.db.commit()
         await self.db.refresh(new)
 
-    async def delete(self, user_id: int) -> bool:
-        result = await self.db.execute(select(Client).where(Client.user_id == user_id))
+    async def delete(self, id: int) -> bool:
+        result = await self.db.execute(select(Client).where(Client.id == id))
         client = result.scalar_one_or_none()
         if not client:
-            raise ItemNotFound(item_id=user_id, item="client")
+            raise ItemNotFound(item_id=id, item="client")
 
         await self.db.delete(client)
         await self.db.commit()
         return True
+
+    async def update(self, id: int, data: ClientUpdt):
+        result = await self.db.get_one(Client, id)
+
+        if not result:
+            raise ItemNotFound(item_id=id, item="client")
+
+        for field, value in data.model_dump(exclude_unset=True).items():
+            setattr(result, field, value)
+
+        await self.db.commit()
+        await self.db.refresh(result)
+        return result
+
+    async def update_cp(self, id: int, data: ClientProdUpdt):
+        result = await self.db.get_one(ClientProduct, id)
+
+        if not result:
+            raise ItemNotFound(item_id=id, item="client product")
+
+        for field, value in data.model_dump(exclude_unset=True).items():
+            setattr(result, field, value)
+
+        await self.db.commit()
+        await self.db.refresh(result)
+        return result
 
 
 async def get_c_dao(db: AsyncSession = Depends(get_db)) -> ClientDao:

@@ -18,6 +18,10 @@ class ClientProdWrite(BaseModel):
     custom_price: float
 
 
+class ClientProdUpdt(BaseModel):
+    custom_price: float
+
+
 class ClientBase(BaseModel):
     phone: str
     address: str
@@ -28,6 +32,10 @@ class ClientBase(BaseModel):
 
 class ClientWrite(ClientBase):
     user_id: int
+    pass
+
+
+class ClientUpdt(ClientBase):
     pass
 
 

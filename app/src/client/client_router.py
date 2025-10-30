@@ -6,6 +6,8 @@ from app.src.client.client_schema import (
     ClientRead,
     ClientWrite,
     ClientProdWrite,
+    ClientProdUpdt,
+    ClientUpdt,
 )
 from app.src.product.product_dao import ProductDao, get_prod_dao
 
@@ -24,31 +26,48 @@ async def get_all(dao: ClientDao = Depends(get_c_dao)):
     return clients
 
 
-@router.post("/create", response_model=ClientRead)
-async def create(data: ClientWrite, dao: ClientDao = Depends(get_c_dao)):
+@router.post("/create", response_model=ClientBase)
+async def create(
+    data: ClientWrite,
+    dao: ClientDao = Depends(get_c_dao),
+    p_dao: ProductDao = Depends(get_prod_dao),
+    c_dao: ClientDao = Depends(get_c_dao),
+):
     client = await dao.create(data)
     if not client:
         raise Exception()
-    await _create_client_prods(client.id)
+    await _create_client_prods(client.id, p_dao, c_dao)
 
     return client
 
 
-async def _create_client_prods(
-    c_id: int,
-    p_dao: ProductDao = Depends(get_prod_dao),
-    c_dao: ClientDao = Depends(get_c_dao),
-):
+async def _create_client_prods(c_id: int, p_dao: ProductDao, c_dao: ClientDao):
 
     products = await p_dao.get_all()
 
-    for p in products:
-        await c_dao.create_cp(ClientProdWrite(c_id, p.id, p.sell_price))
+    if products:
+        for p in products:
+            d = ClientProdWrite(
+                client_id=c_id, product_id=p.id, custom_price=p.sell_price
+            )
+            await c_dao.create_cp(d)
 
 
-@router.delete("/delete/{user_id}", status_code=status.HTTP_200_OK)
-async def delete(user_id: int, dao: ClientDao = Depends(get_c_dao)):
-    result = await dao.delete(user_id)
+@router.patch("/update/{id}", response_model=ClientBase)
+async def update(id: int, d: ClientUpdt, dao: ClientDao = Depends(get_c_dao)):
+    result = await dao.update(id, d)
+    return result
+
+
+@router.patch("/update_client_product/{cp_id}", response_model=ClientProdWrite)
+async def update_cp(cp_id: int, d: ClientProdUpdt, dao: ClientDao = Depends(get_c_dao)):
+    result = await dao.update_cp(cp_id, d)
+    return result
+
+
+@router.delete("/delete/{id}", status_code=status.HTTP_200_OK)
+async def delete(id: int, dao: ClientDao = Depends(get_c_dao)):
+    result = await dao.delete(id)
     if not result:
         raise Exception()
     return {"message": "Successfully deleted"}

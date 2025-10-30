@@ -1,9 +1,11 @@
-from fastapi import APIRouter, status, Depends, Response, UploadFile, Form
+from fastapi import APIRouter, status, Depends, UploadFile, Form
 from .product_dao import ProductDao, get_prod_dao
 from typing import Optional
 from app.utils.custom_exceptions import ItemNotFound
 from app.src.product.product_schema import ProductRead, ProductWrite
 from app.utils.img_uploader import img_uploader, delete_image
+from app.src.client.client_dao import ClientDao, get_c_dao
+from app.src.client.client_schema import ClientProdWrite
 
 router = APIRouter(prefix="/products", tags=["product"])
 
@@ -29,7 +31,10 @@ async def create(
     buy_price: float = Form(...),
     sell_price: float = Form(...),
     dao: ProductDao = Depends(get_prod_dao),
+    c_dao: ClientDao = Depends(get_c_dao),
 ):
+
+    img_path = None
     if img:
         img_path = img_uploader(img)
 
@@ -48,6 +53,9 @@ async def create(
 
     if not product:
         raise Exception()
+
+    await _create_cp_for_each_c(product, c_dao)
+
     return product
 
 
@@ -65,3 +73,16 @@ async def delete(id: int, dao: ProductDao = Depends(get_prod_dao)):
         raise Exception()
 
     return {"message": "Successfully deleted"}
+
+
+async def _create_cp_for_each_c(p: ProductRead, c_dao: ClientDao):
+
+    clients = await c_dao.get_all()
+
+    if clients:
+        for c in clients:
+            d = ClientProdWrite(
+                client_id=c.id, product_id=p.id, custom_price=p.sell_price
+            )
+
+            await c_dao.create_cp(d)

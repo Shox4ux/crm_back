@@ -21,16 +21,26 @@ async def get_by_id(id: int, dao: OrderProductDao = Depends(get_orp_dao)):
 
 @router.get("/get_all", response_model=Optional[list[OrderProdRead]])
 async def get_all(dao: OrderProductDao = Depends(get_orp_dao)):
-    warehouse_prods = await dao.get_all()
-    return warehouse_prods
+    order_prods = await dao.get_all()
+    return order_prods
 
 
 @router.post("/create", response_model=OrderProdBase)
 async def create(data: OrderProdWrite, dao: OrderProductDao = Depends(get_orp_dao)):
-    warehouse_prod = await dao.create(data)
-    if not warehouse_prod:
+    order_prod = await dao.create(data)
+    if not order_prod:
         raise Exception()
-    return warehouse_prod
+    return order_prod
+
+
+@router.patch("/update/{id}", response_model=OrderProdBase)
+async def update(
+    id: int, data: OrderProdBase, dao: OrderProductDao = Depends(get_orp_dao)
+):
+    order_prod = await dao.update(id, data)
+    if not order_prod:
+        raise Exception()
+    return order_prod
 
 
 @router.delete("/delete/{id}", status_code=status.HTTP_200_OK)

@@ -37,11 +37,9 @@ def create_access_token(role: int, id: int) -> TokenRead:
 
 
 def decode_access_token(token: str) -> TokenPayload:
-    print(f"decoded {token}")
 
     try:
         decoded = jwt.decode(token, sttngs.TOKEN_KEY, algorithms=[sttngs.ALGORITHM])
-        # print(f"decoded {decoded}")
 
         return TokenPayload(**decoded)
     except jwt.ExpiredSignatureError:

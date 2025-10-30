@@ -32,7 +32,6 @@ async def create(data: UserWrite, dao: UserDao = Depends(get_user_dao)):
 async def get_by_username(id: int, d: UserUpdt, dao: UserDao = Depends(get_user_dao)):
     if d.password:
         d.hashed_password = get_pass_hashed(d.password)
-
     user = await dao.update(id, d)
     return user
 

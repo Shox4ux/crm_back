@@ -12,6 +12,9 @@ async def global_exception_handler(request: Request, exc: Exception):
     if isinstance(exc, InvalidToken):
         return JSONResponse(status_code=403, content={"message": exc.message})
 
+    if isinstance(exc, InactiveUser):
+        return JSONResponse(status_code=403, content={"message": exc.message})
+
     if isinstance(exc, TokenExpired):
         return JSONResponse(status_code=403, content={"message": exc.message})
 
@@ -51,6 +54,12 @@ class ServerError(Exception):
 class InvalidToken(Exception):
     def __init__(self):
         self.message = "Invalid signature, Wrong secret key or algorithm"
+        super().__init__(self.message)
+
+
+class InactiveUser(Exception):
+    def __init__(self):
+        self.message = "Current user is Inactive"
         super().__init__(self.message)
 
 

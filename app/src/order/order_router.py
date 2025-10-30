@@ -26,7 +26,7 @@ async def create(data: OrderWrite, dao: OrderDao = Depends(get_or_dao)):
     return warehouse_prod
 
 
-@router.patch("/update_status/{id}", response_model=Optional[OrderBase])
+@router.patch("/update/{id}", response_model=Optional[OrderBase])
 async def update_status(id: int, data: OrderUpdt, dao: OrderDao = Depends(get_or_dao)):
     warehouse_prod = await dao.update_status(id, data)
     return warehouse_prod
