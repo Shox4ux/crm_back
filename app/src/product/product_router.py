@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, Depends, UploadFile, Form
+from fastapi import APIRouter, File, status, Depends, UploadFile, Form
 from .product_dao import ProductDao, get_prod_dao
 from typing import Optional
 from app.utils.custom_exceptions import ItemNotFound
@@ -26,7 +26,7 @@ async def get_all(dao: ProductDao = Depends(get_prod_dao)):
 
 @router.post("/create", response_model=ProductRead)
 async def create(
-    img: Optional[UploadFile],
+    img: UploadFile | None = File(None),
     name: str = Form(...),
     buy_price: float = Form(...),
     sell_price: float = Form(...),
