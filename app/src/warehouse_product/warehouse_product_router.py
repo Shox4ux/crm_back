@@ -31,7 +31,7 @@ async def get_all(dao: WarehouseProductDao = Depends(get_wp_dao)):
     return warehouse_prods
 
 
-@router.post("/create", response_model=WarehProdBase)
+@router.post("/create", response_model=WarehProdRead)
 async def create(data: WarehProdWrite, dao: WarehouseProductDao = Depends(get_wp_dao)):
     warehouse_prod = await dao.create(data)
     if not warehouse_prod:
