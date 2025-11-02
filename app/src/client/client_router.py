@@ -17,6 +17,7 @@ router = APIRouter(prefix="/clients", tags=["client"])
 @router.get("/get_by_user_id/{user_id}", response_model=Optional[ClientRead])
 async def get_by_id(user_id: int, dao: ClientDao = Depends(get_c_dao)):
     client = await dao.get_by_uid(user_id)
+
     return client
 
 

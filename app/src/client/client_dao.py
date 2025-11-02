@@ -34,24 +34,25 @@ class ClientDao:
                 .selectinload(WarehouseProduct.product),
             )
             .where(Client.user_id == user_id)
+            .limit(1)
         )
-
-        if not result:
+        client = result.scalar_one_or_none()
+        if not client:
             raise ItemNotFound(item_id=user_id, item="client")
 
-        return result.scalar_one_or_none()
+        return client
 
-    async def get_by_id(self, id: int) -> ClientRead | None:
-        result = await self.db.execute(
-            select(Client)
-            .options(selectinload(Client.user), selectinload(Client.products))
-            .where(Client.id == id)
-        )
+    # async def get_by_id(self, id: int) -> ClientRead | None:
+    #     result = await self.db.execute(
+    #         select(Client)
+    #         .options(selectinload(Client.user), selectinload(Client.products))
+    #         .where(Client.id == id)
+    #     )
 
-        if not result:
-            raise ItemNotFound(item_id=id, item="client")
+    #     if not result:
+    #         raise ItemNotFound(item_id=id, item="client")
 
-        return result.scalar_one_or_none()
+    #     return result.scalar_one_or_none()
 
     async def get_all(self) -> list[ClientRead] | None:
         result = await self.db.execute(
