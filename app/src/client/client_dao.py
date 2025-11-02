@@ -28,6 +28,10 @@ class ClientDao:
             .options(
                 selectinload(Client.user),
                 selectinload(Client.products).selectinload(ClientProduct.product),
+                selectinload(Client.orders)
+                .selectinload(Order.order_products)
+                .selectinload(OrderProduct.warehouse_product)
+                .selectinload(WarehouseProduct.product),
             )
             .where(Client.user_id == user_id)
         )
