@@ -2,28 +2,7 @@ from typing import Optional
 from pydantic import BaseModel
 from datetime import datetime
 from app.src.order_product.order_product_schema import OrderProdRead
-from app.src.client.client_schema import ClientBase
-
-
-# class Order(ComCharModel):
-#     __tablename__ = tbnames.ORDER
-
-#     client_id = Column(Integer, ForeignKey(f"{tbnames.CLIENT}.id"))
-#     client = relationship("Client", uselist=False)
-#     products = relationship("OrderProduct", uselist=True)
-#     status = Column(Integer, nullable=False)
-#     client_note = Column(String(425), nullable=True)
-#     admin_note = Column(String(425), nullable=True)
-
-
-class OrderBase(BaseModel):
-    status: int
-    paid_amount: float
-    admin_note: str
-    client_note: str
-
-    class Config:
-        from_attributes = True
+from app.schemas.common_schemas import OrderBase, ClientBase
 
 
 class OrderWrite(BaseModel):

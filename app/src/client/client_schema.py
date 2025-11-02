@@ -3,6 +3,7 @@ from typing import Optional
 from datetime import datetime
 from app.src.product.product_schema import ProductRead
 from app.src.user.user_schema import UserRead
+from app.schemas.common_schemas import ClientBase, OrderForClient
 
 
 class ClientProdRead(BaseModel):
@@ -22,14 +23,6 @@ class ClientProdUpdt(BaseModel):
     custom_price: float
 
 
-class ClientBase(BaseModel):
-    phone: str
-    address: str
-
-    class Config:
-        from_attributes = True
-
-
 class ClientWrite(ClientBase):
     user_id: int
     pass
@@ -43,6 +36,7 @@ class ClientRead(ClientBase):
     id: int
     user: UserRead
     products: Optional[list[ClientProdRead]]
+    orders: Optional[list[OrderForClient]]
     created_at: datetime
 
     class Config:

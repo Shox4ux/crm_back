@@ -12,6 +12,9 @@ from sqlalchemy import select, update, delete
 from .client_model import Client, ClientProduct
 from sqlalchemy.orm import selectinload, joinedload
 from app.utils.custom_exceptions import ItemNotFound
+from app.src.order.order_model import Order
+from app.src.order_product.order_product_model import OrderProduct
+from app.src.warehouse_product.warehouse_product_model import WarehouseProduct
 
 
 class ClientDao:
@@ -51,6 +54,10 @@ class ClientDao:
             select(Client).options(
                 selectinload(Client.user),
                 selectinload(Client.products).selectinload(ClientProduct.product),
+                selectinload(Client.orders)
+                .selectinload(Order.order_products)
+                .selectinload(OrderProduct.warehouse_product)
+                .selectinload(WarehouseProduct.product),
             )
         )
         return result.scalars().all()

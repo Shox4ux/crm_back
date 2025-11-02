@@ -8,7 +8,7 @@ class Order(ComCharModel):
     __tablename__ = tbnames.ORDER
 
     client_id = Column(Integer, ForeignKey(f"{tbnames.CLIENT}.id"))
-    client = relationship("Client", uselist=False)
+    client = relationship("Client", uselist=False, back_populates="orders")
     order_products = relationship(
         "OrderProduct",
         uselist=True,

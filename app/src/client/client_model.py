@@ -11,6 +11,7 @@ class Client(ComCharModel):
     phone = Column(String(225), nullable=True)
     address = Column(String(225), nullable=True)
     products = relationship("ClientProduct", uselist=True)
+    orders = relationship("Order", uselist=True, back_populates="client")
 
 
 class ClientProduct(ComCharModel):
