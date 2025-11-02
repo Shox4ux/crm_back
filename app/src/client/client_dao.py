@@ -22,7 +22,10 @@ class ClientDao:
     async def get_by_uid(self, user_id: int) -> ClientRead | None:
         result = await self.db.execute(
             select(Client)
-            .options(selectinload(Client.user), selectinload(Client.products))
+            .options(
+                selectinload(Client.user),
+                selectinload(Client.products).selectinload(ClientProduct.product),
+            )
             .where(Client.user_id == user_id)
         )
 
