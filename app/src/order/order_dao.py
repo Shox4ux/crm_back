@@ -8,6 +8,7 @@ from sqlalchemy.orm import selectinload
 from app.utils.custom_exceptions import ItemNotFound
 from app.src.warehouse_product.warehouse_product_model import WarehouseProduct
 from app.src.order_product.order_product_model import OrderProduct
+from app.src.client.client_model import Client
 
 
 class OrderDao:
@@ -34,7 +35,7 @@ class OrderDao:
     async def get_all(self) -> list[OrderRead] | None:
         result = await self.db.execute(
             select(Order).options(
-                selectinload(Order.client),
+                selectinload(Order.client).selectinload(Client.user),
                 selectinload(Order.order_products)
                 .selectinload(OrderProduct.warehouse_product)
                 .selectinload(WarehouseProduct.product),
