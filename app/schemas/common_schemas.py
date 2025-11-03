@@ -9,7 +9,7 @@ from app.src.order_product.order_product_schema import OrderProdRead
 class ClientPrRead(BaseModel):
     id: int
     custom_price: float
-    product: Optional[ProductRead]
+    # product: Optional[ProductRead]
     created_at: datetime
 
 
@@ -43,7 +43,7 @@ class OrderForClient(OrderBase):
 class ClientForOrder(ClientBase):
     id: int
     user: UserRead
-    # products: Optional[list[ClientPrRead]]
+    products: Optional[list[ClientPrRead]]
     created_at: datetime
 
     class Config:

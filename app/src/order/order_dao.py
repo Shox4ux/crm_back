@@ -36,6 +36,7 @@ class OrderDao:
         result = await self.db.execute(
             select(Order).options(
                 selectinload(Order.client).selectinload(Client.user),
+                selectinload(Order.client).selectinload(Client.products),
                 selectinload(Order.order_products)
                 .selectinload(OrderProduct.warehouse_product)
                 .selectinload(WarehouseProduct.product),
