@@ -5,7 +5,7 @@ from app.utils.custom_exceptions import ItemNotFound
 from app.src.order_product.order_product_schema import (
     OrderProdRead,
     OrderProdBase,
-    OrderProdWrite,
+    OrderBulkWrite,
 )
 
 router = APIRouter(prefix="/order_products", tags=["order_product"])
@@ -25,12 +25,12 @@ async def get_all(dao: OrderProductDao = Depends(get_orp_dao)):
     return order_prods
 
 
-@router.post("/create", response_model=OrderProdBase)
-async def create(data: OrderProdWrite, dao: OrderProductDao = Depends(get_orp_dao)):
+@router.post("/create", status_code=status.HTTP_200_OK)
+async def create(data: OrderBulkWrite, dao: OrderProductDao = Depends(get_orp_dao)):
     order_prod = await dao.create(data)
     if not order_prod:
         raise Exception()
-    return order_prod
+    return "Successfully created"
 
 
 @router.patch("/update/{id}", response_model=OrderProdBase)

@@ -1,12 +1,13 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .order_product_schema import OrderProdRead, OrderProdWrite, OrderProdBase
+from .order_product_schema import OrderProdRead, OrderBulkWrite, OrderProdBase
 from sqlalchemy import select
 from app.src.order_product.order_product_model import OrderProduct
 from app.src.warehouse_product.warehouse_product_model import WarehouseProduct
 from sqlalchemy.orm import selectinload
 from app.utils.custom_exceptions import ItemNotFound
+from typing import Optional
 
 
 class OrderProductDao:
@@ -32,13 +33,21 @@ class OrderProductDao:
         )
         return result.scalars().all()
 
-    async def create(self, data: OrderProdWrite) -> OrderProduct:
-        new = OrderProduct(**data.model_dump())
-        self.db.add(new)
-        await self.db.commit()
-        await self.db.refresh(new)
+    async def create(self, data: OrderBulkWrite) -> Optional[list[OrderProdRead]]:
 
-        return new
+        prods = [
+            OrderProduct(
+                order_id=data.order_id,
+                warehouse_product_id=item.warehouse_product_id,
+                custom_price=item.custom_price,
+                custom_quantity=item.custom_quantity,
+            )
+            for item in data.items
+        ]
+
+        self.db.add_all(prods)
+        await self.db.commit()
+        return prods
 
     async def delete(self, id: int) -> bool:
         result = await self.db.execute(

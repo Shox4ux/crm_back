@@ -14,7 +14,11 @@ class OrderProdBase(BaseModel):
 
 class OrderProdWrite(OrderProdBase):
     warehouse_product_id: int
+
+
+class OrderBulkWrite(BaseModel):
     order_id: int
+    items: Optional[list[OrderProdWrite]]
 
 
 class OrderProdRead(OrderProdBase):
