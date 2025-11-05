@@ -27,6 +27,7 @@ class OrderBase(BaseModel):
     paid_amount: float
     admin_note: str
     client_note: str
+    created_at: datetime
 
     class Config:
         from_attributes = True
@@ -35,7 +36,6 @@ class OrderBase(BaseModel):
 class OrderForClient(OrderBase):
     id: int
     order_products: Optional[list[OrderProdRead]]
-    created_at: datetime
 
     class Config:
         from_attributes = True
