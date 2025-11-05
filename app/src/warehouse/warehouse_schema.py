@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
-from app.src.warehouse_product.warehouse_product_schema import WarehProdRead
+from app.src.warehouse_product.warehouse_product_schema import WareProdRead
 
 # warehouse_id = Column(Integer, ForeignKey(f"{tbnames.WAREHOUSE}.id"))
 # product_id = Column(Integer, ForeignKey(f"{tbnames.PRODUCT}.id"))
@@ -19,7 +19,7 @@ class WarehouseBase(BaseModel):
 
 class WarehouseRead(WarehouseBase):
     id: int
-    products: Optional[list[WarehProdRead]]
+    products: Optional[list[WareProdRead]]
     created_at: datetime
 
     class Config:

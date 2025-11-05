@@ -1,7 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel
 from datetime import datetime
-from app.src.warehouse_product.warehouse_product_schema import WarehProdRead
+from app.src.warehouse_product.warehouse_product_schema import WareProdRead
 
 
 class OrderProdBase(BaseModel):
@@ -23,7 +23,7 @@ class OrderBulkWrite(BaseModel):
 
 class OrderProdRead(OrderProdBase):
     id: int
-    warehouse_product: Optional[WarehProdRead]
+    warehouse_product: Optional[WareProdRead]
     created_at: datetime
 
     class Config:
