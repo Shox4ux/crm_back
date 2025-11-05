@@ -27,7 +27,6 @@ class OrderRead(OrderBase):
     id: int
     order_products: Optional[list[OrderProdRead]]
     client: Optional[ClientForOrder]
-    created_at: datetime
 
     class Config:
         from_attributes = True
