@@ -5,7 +5,7 @@ from app.utils.custom_exceptions import ItemNotFound
 from app.src.warehouse_product.warehouse_product_schema import (
     WareProdRead,
     WareProdWrite,
-    WareProdBase,
+    WareProdUpdate,
 )
 
 router = APIRouter(prefix="/warehouse_products", tags=["warehouse_product"])
@@ -33,6 +33,15 @@ async def get_all(dao: WarehouseProductDao = Depends(get_wp_dao)):
 
 @router.post("/create", response_model=WareProdRead)
 async def create(data: WareProdWrite, dao: WarehouseProductDao = Depends(get_wp_dao)):
+    warehouse_prod = await dao.create(data)
+    if not warehouse_prod:
+        raise Exception()
+    return warehouse_prod
+
+
+@router.post("/update", response_model=WareProdRead)
+async def create(data: WareProdUpdate, dao: WarehouseProductDao = Depends(get_wp_dao)):
+
     warehouse_prod = await dao.create(data)
     if not warehouse_prod:
         raise Exception()

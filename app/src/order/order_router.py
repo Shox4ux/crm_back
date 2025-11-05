@@ -1,7 +1,6 @@
-from fastapi import APIRouter, status, Depends, Response
+from fastapi import APIRouter, status, Depends
 from .order_dao import OrderDao, get_or_dao
 from typing import Optional
-from app.utils.custom_exceptions import ItemNotFound
 from app.src.order.order_schema import OrderRead, OrderBase, OrderWrite, OrderUpdt
 
 router = APIRouter(prefix="/orders", tags=["order"])

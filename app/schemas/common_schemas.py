@@ -22,6 +22,7 @@ class ClientBase(BaseModel):
 
 
 class OrderBase(BaseModel):
+    id: int
     status: int
     paid_amount: float
     admin_note: str
