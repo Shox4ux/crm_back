@@ -1,7 +1,7 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from .src.warehouse import warehouse_router
 from .src.product import product_router
 from .src.admin import admin_router
@@ -10,8 +10,7 @@ from .src.user import user_router
 from .src.order import order_router
 from .src.order_product import order_product_router
 from .src.warehouse_product import warehouse_product_router
-
-
+import json
 from .src.auth import auth_router
 from .utils.custom_exceptions import global_exception_handler
 
@@ -29,6 +28,28 @@ app.add_middleware(
 app.add_exception_handler(Exception, global_exception_handler)
 
 app.mount("/uploads", StaticFiles(directory="app/uploads"), name="uploads")
+
+
+# @app.middleware("http")
+# async def log_requests(request: Request, call_next):
+#     # Read and clone the body (you can only read it once)
+#     body = await request.body()
+#     try:
+#         body_data = json.loads(body.decode("utf-8"))
+#     except Exception:
+#         body_data = body.decode("utf-8") if body else None
+
+#     print(f"\n➡️  {request.method} {request.url.path}")
+#     if body_data:
+#         print(f"📦 Body: {json.dumps(body_data, indent=2, ensure_ascii=False)}")
+#     else:
+#         print("📭 Empty body")
+
+#     # Call the actual endpoint
+#     response = await call_next(request)
+#     print(f"⬅️  Response status: {response.status_code}\n")
+
+#     return response
 
 
 @app.get("/")

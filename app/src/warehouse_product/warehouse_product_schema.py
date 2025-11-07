@@ -31,6 +31,7 @@ class WareProdUpdate(BaseModel):
 
 class WareProdRead(WareProdBase):
     product: Optional[ProductRead]
+    warehouse_id: int
     status: int
     arrives_at: Optional[datetime]
     quantity: int
