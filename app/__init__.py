@@ -8,3 +8,4 @@ from app.src.client.client_model import Client, ClientProduct
 from app.src.order.order_model import Order
 from app.src.order_product.order_product_model import OrderProduct
 from app.src.user.user_model import User
+from app.src.product_expense.product_expense_model import ProductExpense

@@ -21,5 +21,5 @@ class ClientProduct(ComCharModel):
         Integer, ForeignKey(f"{tbnames.PRODUCT}.id", ondelete="CASCADE")
     )
     client_id = Column(Integer, ForeignKey(f"{tbnames.CLIENT}.id", ondelete="CASCADE"))
-    product = relationship("Product", uselist=False, back_populates="client_product")
+    product = relationship("Product", uselist=False)
     custom_price = Column(Float, nullable=False)

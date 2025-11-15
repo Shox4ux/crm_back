@@ -2,8 +2,9 @@ from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from .product_schema import ProductRead, ProductWrite
-from sqlalchemy import select, update, delete
+from sqlalchemy import select
 from app.src.product.product_model import Product
+from sqlalchemy.orm import selectinload
 from app.utils.custom_exceptions import ItemNotFound
 
 
@@ -17,7 +18,9 @@ class ProductDao:
         return result.scalar_one_or_none()
 
     async def get_all(self) -> list[ProductRead] | None:
-        result = await self.db.execute(select(Product))
+        result = await self.db.execute(
+            select(Product).options(selectinload(Product.base_expenses))
+        )
         return result.scalars().all()
 
     async def create(self, data: ProductWrite) -> Product:

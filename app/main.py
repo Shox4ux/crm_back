@@ -10,7 +10,8 @@ from .src.user import user_router
 from .src.order import order_router
 from .src.order_product import order_product_router
 from .src.warehouse_product import warehouse_product_router
-import json
+from .src.product_expense import product_expense_router
+
 from .src.auth import auth_router
 from .utils.custom_exceptions import global_exception_handler
 
@@ -60,10 +61,12 @@ async def main():
 app.include_router(auth_router.router)
 app.include_router(user_router.router)
 
+
 app.include_router(admin_router.router)
 app.include_router(client_router.router)
 
 app.include_router(product_router.router)
+app.include_router(product_expense_router.router)
 
 app.include_router(warehouse_router.router)
 app.include_router(warehouse_product_router.router)

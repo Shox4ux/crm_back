@@ -28,8 +28,10 @@ async def get_all(dao: ProductDao = Depends(get_prod_dao)):
 async def create(
     img: UploadFile | None = File(None),
     name: str = Form(...),
-    buy_price: float = Form(...),
+    base_price: float = Form(...),
     sell_price: float = Form(...),
+    total_quantity: int = Form(...),
+    active_quantity: int = Form(...),
     dao: ProductDao = Depends(get_prod_dao),
     c_dao: ClientDao = Depends(get_c_dao),
 ):
@@ -45,7 +47,9 @@ async def create(
     data = ProductWrite(
         img_url=img_path,
         name=name,
-        buy_price=buy_price,
+        base_price=base_price,
+        total_quantity=total_quantity,
+        active_quantity=active_quantity,
         sell_price=sell_price,
     )
 
