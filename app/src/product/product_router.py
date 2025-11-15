@@ -2,7 +2,7 @@ from fastapi import APIRouter, File, status, Depends, UploadFile, Form
 from .product_dao import ProductDao, get_prod_dao
 from typing import Optional
 from app.utils.custom_exceptions import ItemNotFound
-from app.src.product.product_schema import ProductRead, ProductWrite
+from app.src.product.product_schema import ProductRead, ProductWrite, ProductSimpleRead
 from app.utils.img_uploader import img_uploader, delete_image
 from app.src.client.client_dao import ClientDao, get_c_dao
 from app.src.client.client_schema import ClientProdWrite
@@ -24,7 +24,7 @@ async def get_all(dao: ProductDao = Depends(get_prod_dao)):
     return products
 
 
-@router.post("/create", response_model=ProductRead)
+@router.post("/create", response_model=ProductSimpleRead)
 async def create(
     img: UploadFile | None = File(None),
     name: str = Form(...),

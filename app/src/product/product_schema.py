@@ -17,6 +17,14 @@ class ProductWrite(ProdBase):
     pass
 
 
+class ProductSimpleRead(ProdBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
 class ProductRead(ProdBase):
     id: int
     base_expenses: Optional[list[ProdExpRead]]
