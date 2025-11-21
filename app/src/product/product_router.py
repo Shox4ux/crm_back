@@ -2,9 +2,15 @@ from fastapi import APIRouter, File, status, Depends, UploadFile, Form
 from .product_dao import ProductDao, get_prod_dao
 from typing import Optional
 from app.utils.custom_exceptions import ItemNotFound
-from app.src.product.product_schema import ProductRead, ProductWrite, ProductSimpleRead
+from app.src.product.product_schema import (
+    ProductRead,
+    ProductWrite,
+    ProductSimpleRead,
+    ProductBase,
+)
 from app.utils.img_uploader import img_uploader, delete_image
 from app.src.client.client_dao import ClientDao, get_c_dao
+from app.src.product_expense.product_expense_dao import get_prod_exp_dao, ProdExpDao
 from app.src.client.client_schema import ClientProdWrite
 
 router = APIRouter(prefix="/products", tags=["product"])
@@ -61,6 +67,42 @@ async def create(
     await _create_cp_for_each_c(product, c_dao)
 
     return product
+
+
+@router.patch("/update/{id}", status_code=status.HTTP_200_OK)
+async def update(
+    id: int,
+    img: UploadFile | None = File(None),
+    name: Optional[str] = Form(None),
+    base_price: Optional[float] = Form(None),
+    sell_price: Optional[float] = Form(None),
+    total_quantity: Optional[int] = Form(None),
+    active_quantity: Optional[int] = Form(None),
+    dao: ProductDao = Depends(get_prod_dao),
+):
+    img_path: str | None
+
+    if img is not None:
+        prod = await dao.get_one(id)
+        delete_image(image_path=prod.img_url)
+        new_path = img_uploader(img)
+        img_path = new_path
+
+    data: ProductBase = ProductBase(
+        name=name,
+        base_price=base_price,
+        img_url=img_path,
+        sell_price=sell_price,
+        active_quantity=active_quantity,
+        total_quantity=total_quantity,
+    )
+
+    p_updated = await dao.update(id=id, data=data)
+
+    if not p_updated:
+        raise Exception()
+
+    return {"message": "Successfully updated"}
 
 
 @router.delete("/delete/{id}", status_code=status.HTTP_200_OK)

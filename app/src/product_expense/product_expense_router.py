@@ -6,6 +6,8 @@ from app.src.product_expense.product_expense_schema import (
     ProdExpRead,
     ProdExpBulkWrite,
     ProdExpWrite,
+    ProdExpUpdateBulk,
+    ProdExpUpdate,
 )
 
 router = APIRouter(prefix="/product_expense", tags=["product_expense"])
@@ -41,6 +43,31 @@ async def delete(id: int, dao: ProdExpDao = Depends(get_prod_exp_dao)):
         raise Exception()
 
     return {"message": "Successfully deleted"}
+
+
+@router.patch("/update_bulk", status_code=status.HTTP_200_OK)
+async def update(d: ProdExpUpdateBulk, dao: ProdExpDao = Depends(get_prod_exp_dao)):
+    await _update_bulk(d.update_exps, dao)
+    await _delete_bulk(d.removed, dao)
+    await dao.create(d.new_exp)
+
+    return "Successfully created"
+
+
+async def _update_bulk(list: Optional[list[ProdExpUpdate]], dao: ProdExpDao):
+    if list:
+        for up in list:
+            result = await dao.update(up.id, up)
+            if not result:
+                raise Exception()
+
+
+async def _delete_bulk(list: Optional[list[int]], dao: ProdExpDao):
+    if list:
+        for di in list:
+            result = await dao.delete(di)
+            if not result:
+                raise Exception()
 
 
 @router.patch("/update/{id}", response_model=ProdExpRead)

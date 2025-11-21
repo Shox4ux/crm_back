@@ -4,7 +4,7 @@ from datetime import datetime
 from app.src.product_expense.product_expense_schema import ProdExpRead, ProdExpWrite
 
 
-class ProdBase(BaseModel):
+class ProductBase(BaseModel):
     name: str
     base_price: float
     sell_price: float
@@ -13,11 +13,11 @@ class ProdBase(BaseModel):
     active_quantity: int
 
 
-class ProductWrite(ProdBase):
+class ProductWrite(ProductBase):
     pass
 
 
-class ProductSimpleRead(ProdBase):
+class ProductSimpleRead(ProductBase):
     id: int
     created_at: datetime
 
@@ -25,7 +25,7 @@ class ProductSimpleRead(ProdBase):
         from_attributes = True
 
 
-class ProductRead(ProdBase):
+class ProductRead(ProductBase):
     id: int
     base_expenses: Optional[list[ProdExpRead]]
     created_at: datetime

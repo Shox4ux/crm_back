@@ -1,7 +1,7 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .product_schema import ProductRead, ProductWrite
+from .product_schema import ProductRead, ProductWrite, ProductBase
 from sqlalchemy import select
 from app.src.product.product_model import Product
 from sqlalchemy.orm import selectinload
@@ -29,6 +29,18 @@ class ProductDao:
         await self.db.commit()
         await self.db.refresh(new_product)
         return new_product
+
+    async def update(self, id: int, data: ProductBase) -> Product:
+        result = await self.db.get_one(Product, id)
+        if not result:
+            raise ItemNotFound(item_id=id, item="order")
+
+        for field, value in data.model_dump(exclude_none=True).items():
+            setattr(result, field, value)
+
+        await self.db.commit()
+        await self.db.refresh(result)
+        return result
 
     async def delete(self, id: int) -> bool:
         result = await self.db.execute(select(Product).where(Product.id == id))
