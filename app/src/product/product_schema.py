@@ -5,12 +5,12 @@ from app.src.product_expense.product_expense_schema import ProdExpRead, ProdExpW
 
 
 class ProductBase(BaseModel):
-    name: str
-    base_price: float
-    sell_price: float
+    name: Optional[str]
+    base_price: Optional[float]
+    sell_price: Optional[float]
     img_url: Optional[str]
-    total_quantity: int
-    active_quantity: int
+    total_quantity: Optional[int]
+    active_quantity: Optional[int]
 
 
 class ProductWrite(ProductBase):
