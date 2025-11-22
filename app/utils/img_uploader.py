@@ -40,8 +40,11 @@ def delete_image(image_path: str):
         return
 
     # image_path looks like: /uploads/product_imgs/xxxxx.png
-    filename = Path(image_path).name
-    file_path = UPLOAD_DIR / filename
+    try:
+        filename = Path(image_path).name
+        file_path = UPLOAD_DIR / filename
+    except Exception:
+        return
 
     if file_path.exists():
         file_path.unlink()

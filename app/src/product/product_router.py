@@ -82,7 +82,7 @@ async def update(
 ):
     img_path: str | None
 
-    if img is not None:
+    if img:
         prod = await dao.get_one(id)
         delete_image(image_path=prod.img_url)
         new_path = img_uploader(img)
