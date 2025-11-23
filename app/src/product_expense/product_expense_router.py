@@ -47,11 +47,14 @@ async def delete(id: int, dao: ProdExpDao = Depends(get_prod_exp_dao)):
 
 @router.patch("/update_bulk", status_code=status.HTTP_200_OK)
 async def update(d: ProdExpUpdateBulk, dao: ProdExpDao = Depends(get_prod_exp_dao)):
-    await _update_bulk(d.update_exps, dao)
-    await _delete_bulk(d.removed, dao)
-    await dao.create(d.new_exp)
+    if d.update_exps:
+        await _update_bulk(d.update_exps, dao)
+    if d.removed:
+        await _delete_bulk(d.removed, dao)
+    if d.new_exp:
+        await dao.create(d.new_exp)
 
-    return "Successfully created"
+    return "Successfully updated"
 
 
 async def _update_bulk(list: Optional[list[ProdExpUpdate]], dao: ProdExpDao):
