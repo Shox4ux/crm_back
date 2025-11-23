@@ -80,13 +80,13 @@ async def update(
     active_quantity: Optional[int] = Form(None),
     dao: ProductDao = Depends(get_prod_dao),
 ):
-    img_path: str | None
+    prod = await dao.get_one(id)
 
-    if img:
-        prod = await dao.get_one(id)
+    img_path = prod.img_url
+
+    if img is not None:
         delete_image(image_path=prod.img_url)
-        new_path = img_uploader(img)
-        img_path = new_path
+        img_path = img_uploader(img)
 
     data: ProductBase = ProductBase(
         name=name,
