@@ -27,6 +27,8 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
 
+    ASSETS_FOLDER_PATH: str
+
     TOKEN_KEY: str
     EXPIRES: int = 60
 

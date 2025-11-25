@@ -3,9 +3,12 @@ from pathlib import Path
 import shutil
 import uuid
 import re
+from app.settings import Settings
+
+settings = Settings()
 
 
-UPLOAD_DIR = Path("/home/ubuntu/uploads/product_imgs")
+UPLOAD_DIR = Path(f"{settings.ASSETS_FOLDER_PATH}/product_imgs")
 # inner folder path
 # UPLOAD_DIR = Path("app/uploads/product_imgs")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
@@ -22,9 +25,6 @@ def img_uploader(img: UploadFile) -> str | None:
 
         # Add unique prefix using UUID
         unique_name = f"{uuid.uuid4().hex}_{safe_name}{ext}"
-
-        # Ensure upload folder exists
-        UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
         # Full path on disk
         file_path = UPLOAD_DIR / unique_name

@@ -15,6 +15,10 @@ from .src.product_expense import product_expense_router
 from .src.auth import auth_router
 from .utils.custom_exceptions import global_exception_handler
 
+from app.settings import Settings
+
+settings = Settings()
+
 
 app = FastAPI()
 
@@ -28,7 +32,9 @@ app.add_middleware(
 
 app.add_exception_handler(Exception, global_exception_handler)
 
-app.mount("/uploads", StaticFiles(directory="/home/ubuntu/uploads"), name="uploads")
+app.mount(
+    "/uploads", StaticFiles(directory=settings.ASSETS_FOLDER_PATH), name="uploads"
+)
 
 # @app.middleware("http")
 # async def log_requests(request: Request, call_next):
