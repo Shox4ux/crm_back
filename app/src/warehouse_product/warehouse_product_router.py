@@ -1,5 +1,7 @@
 from fastapi import APIRouter, status, Depends, Response
 from .warehouse_product_dao import WarehouseProductDao, get_wp_dao
+from ..product.product_dao import ProductDao, get_prod_dao
+from ..product.product_schema import ProductBase, ProductRead
 from typing import Optional
 from app.utils.custom_exceptions import ItemNotFound
 from app.src.warehouse_product.warehouse_product_schema import (
@@ -32,10 +34,26 @@ async def get_all(dao: WarehouseProductDao = Depends(get_wp_dao)):
 
 
 @router.post("/create", response_model=WareProdRead)
-async def create(data: WareProdWrite, dao: WarehouseProductDao = Depends(get_wp_dao)):
+async def create(
+    data: WareProdWrite,
+    dao: WarehouseProductDao = Depends(get_wp_dao),
+    p_dao: ProductDao = Depends(get_prod_dao),
+):
     warehouse_prod = await dao.create(data)
+
     if not warehouse_prod:
         raise Exception()
+
+    product: ProductRead = await p_dao.get_one(data.product_id)
+    if not product:
+        raise Exception()
+
+    product.active_quantity = product.active_quantity - data.quantity
+    i: dict = {k: v for k, v in product.__dict__.items() if not k.startswith("_")}
+    updated_product = await p_dao.update(product.id, ProductBase(**i))
+    if not updated_product:
+        raise Exception()
+
     return warehouse_prod
 
 
