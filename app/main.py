@@ -28,8 +28,7 @@ app.add_middleware(
 
 app.add_exception_handler(Exception, global_exception_handler)
 
-app.mount("/uploads", StaticFiles(directory="app/uploads"), name="uploads")
-
+app.mount("/uploads", StaticFiles(directory="/home/ubuntu/uploads"), name="uploads")
 
 # @app.middleware("http")
 # async def log_requests(request: Request, call_next):
