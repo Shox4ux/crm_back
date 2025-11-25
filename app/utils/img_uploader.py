@@ -4,10 +4,15 @@ import shutil
 import uuid
 import re
 
-UPLOAD_DIR = Path("app/uploads/product_imgs")
+
+UPLOAD_DIR = Path("/home/ubuntu/uploads/product_imgs")
+# inner folder path
+# UPLOAD_DIR = Path("app/uploads/product_imgs")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def img_uploader(img: UploadFile) -> str | None:
+
     if img:
         # Extract original file extension
         ext = Path(img.filename).suffix
