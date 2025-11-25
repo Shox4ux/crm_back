@@ -14,7 +14,11 @@ class ProductDao:
         self.db: AsyncSession = db
 
     async def get_one(self, id: int) -> ProductRead | None:
-        result = await self.db.execute(select(Product).where(Product.id == id))
+        result = await self.db.execute(
+            select(Product)
+            .options(selectinload(Product.base_expenses))
+            .where(Product.id == id)
+        )
         return result.scalar_one_or_none()
 
     async def get_all(self) -> list[ProductRead] | None:
