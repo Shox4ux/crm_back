@@ -40,7 +40,7 @@ class WarehouseProductDao:
         self.db.add(new)
 
         await self.db.commit()
-        await self.db.refresh(new, attribute_names=["product"])
+        await self.db.refresh(new)
         return new
 
     async def delete(self, id: int) -> bool:
