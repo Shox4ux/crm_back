@@ -13,9 +13,12 @@ env.bak/
 venv.bak/
 
 # ---- FastAPI / Pydantic / Alembic ----
-# Alembic migrations cache
+# Ignore compiled cache files
 alembic/versions/__pycache__/
-alembic/*.pyc
+alembic/versions/*.pyc
+
+# Keep migration .py files
+!alembic/versions/*.py
 
 # Ignore SQLite database if used locally
 *.db
@@ -72,7 +75,8 @@ docker-compose.override.yml
 # Local development data, temp folders
 tmp/
 data/
-uploads/
+uploads/*
+!uploads/.gitkeep
 media/
 __pypackages__/
 

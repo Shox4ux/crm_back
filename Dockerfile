@@ -19,9 +19,12 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 
-COPY alembic_pro/ ./alembic
-COPY /.env .env
+# Copy Alembic from your actual project (must be in GitHub)
+COPY alembic/ ./alembic
 COPY alembic.ini ./alembic.ini
+
+# Copy environment only if needed
+COPY /.env .env
 
 # Run Alembic migrations before starting the app
 COPY ./app /crm/app
