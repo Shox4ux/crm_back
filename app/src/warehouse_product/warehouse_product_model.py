@@ -10,7 +10,9 @@ class WarehouseProduct(ComCharModel):
     warehouse_id = Column(
         Integer, ForeignKey(f"{tbnames.WAREHOUSE}.id", ondelete="CASCADE")
     )
-    product_id = Column(Integer, ForeignKey(f"{tbnames.PRODUCT}.id"))
+    product_id = Column(
+        Integer, ForeignKey(f"{tbnames.PRODUCT}.id", ondelete="CASCADE")
+    )
     product = relationship("Product", uselist=False, lazy="selectin")
     status = Column(Integer, nullable=False)
     arrives_at = Column(DateTime, default=func.now())
