@@ -4,10 +4,17 @@ from app.settings import Settings
 settings = Settings()
 
 
-engine = create_async_engine(settings.ASYNC_DATABASE_URL, echo=True)
+engine = create_async_engine(
+    settings.ASYNC_DATABASE_URL,
+    echo=True,
+    pool_pre_ping=True,
+    pool_recycle=300,
+)
 
 AsyncSessionLocal = async_sessionmaker(
-    expire_on_commit=False, bind=engine, class_=AsyncSession
+    expire_on_commit=False,
+    bind=engine,
+    class_=AsyncSession,
 )
 
 
