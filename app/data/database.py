@@ -7,6 +7,9 @@ settings = Settings()
 engine = create_async_engine(
     settings.ASYNC_DATABASE_URL,
     echo=True,
+    #     Why needed?
+    # `pool_pre_ping=True` → tests connections before use, avoids “closed connection”
+    # `pool_recycle` → refreshes pool connections to avoid stale/timeout disconnects
     pool_pre_ping=True,
     pool_recycle=300,
 )
