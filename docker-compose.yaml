@@ -13,7 +13,7 @@ services:
       - "8001:8000"
     volumes:
       - ./app:/app        # mount your new code as /app
-
+      - /home/ubuntu/uploads:/home/ubuntu/uploads 
   crm_db:
     image: postgres:15
     container_name: crm_postgres

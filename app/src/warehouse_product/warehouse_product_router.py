@@ -67,7 +67,23 @@ async def create(data: WareProdUpdate, dao: WarehouseProductDao = Depends(get_wp
 
 
 @router.delete("/delete/{id}", status_code=status.HTTP_200_OK)
-async def delete(id: int, dao: WarehouseProductDao = Depends(get_wp_dao)):
+async def delete(
+    id: int,
+    dao: WarehouseProductDao = Depends(get_wp_dao),
+    p_dao: ProductDao = Depends(get_prod_dao),
+):
+    warehouse_prod = await dao.get_one(id)
+    if not warehouse_prod:
+        raise ItemNotFound(item_id=id, item="warehouse_prod")
+    product: ProductRead = await p_dao.get_one(warehouse_prod.product.id)
+    if not product:
+        raise Exception()
+    product.active_quantity = product.active_quantity + warehouse_prod.quantity
+    i: dict = {k: v for k, v in product.__dict__.items() if not k.startswith("_")}
+    updated_product = await p_dao.update(product.id, ProductBase(**i))
+    if not updated_product:
+        raise Exception()
+
     result = await dao.delete(id)
     if not result:
         raise Exception()

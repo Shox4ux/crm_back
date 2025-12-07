@@ -3,11 +3,21 @@ from pathlib import Path
 import shutil
 import uuid
 import re
+from app.settings import Settings
 
-UPLOAD_DIR = Path("app/uploads/product_imgs")
+settings = Settings()
+
+
+UPLOAD_DIR = Path(f"{settings.ASSETS_FOLDER_PATH}/product_imgs")
+print("🚀 UPLOAD_DIR =", UPLOAD_DIR.resolve())
+print("🚀 settings.ASSETS_FOLDER_PATH =", settings.ASSETS_FOLDER_PATH)
+# inner folder path
+# UPLOAD_DIR = Path("app/uploads/product_imgs")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def img_uploader(img: UploadFile) -> str | None:
+
     if img:
         # Extract original file extension
         ext = Path(img.filename).suffix
@@ -18,18 +28,21 @@ def img_uploader(img: UploadFile) -> str | None:
         # Add unique prefix using UUID
         unique_name = f"{uuid.uuid4().hex}_{safe_name}{ext}"
 
-        # Ensure upload folder exists
-        UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-
         # Full path on disk
         file_path = UPLOAD_DIR / unique_name
+
+        print("📝 FINAL SAVE PATH =", file_path.resolve())
+        print("📝 WORKING DIR =", Path().resolve())
 
         # Save file
         with file_path.open("wb") as buffer:
             shutil.copyfileobj(img.file, buffer)
 
+        print("✅ SAVED EXISTS:", file_path.exists(), "AT:", file_path.resolve())
+
         # Return public path for URL
         image_path = f"/uploads/product_imgs/{unique_name}"
+
         return image_path
     else:
         return None
