@@ -67,8 +67,8 @@ docker-compose.override.yml
 
 # ---- Environment & Config ----
 # Environment files (secrets, credentials)
-.env
-.env.*
+
+
 !.env.example
 
 # ---- Misc ----
