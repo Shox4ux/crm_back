@@ -15,6 +15,7 @@ from app.utils.custom_exceptions import ItemNotFound
 from app.src.order.order_model import Order
 from app.src.order_product.order_product_model import OrderProduct
 from app.src.warehouse_product.warehouse_product_model import WarehouseProduct
+from app.src.product.product_model import Product
 
 
 class ClientDao:
@@ -27,11 +28,14 @@ class ClientDao:
             select(Client)
             .options(
                 selectinload(Client.user),
-                selectinload(Client.products).selectinload(ClientProduct.product),
+                selectinload(Client.products)
+                .selectinload(ClientProduct.product)
+                .selectinload(Product.base_expenses),
                 selectinload(Client.orders)
                 .selectinload(Order.order_products)
                 .selectinload(OrderProduct.warehouse_product)
-                .selectinload(WarehouseProduct.product),
+                .selectinload(WarehouseProduct.product)
+                .selectinload(Product.base_expenses),
             )
             .where(Client.user_id == user_id)
             .limit(1)
@@ -58,11 +62,14 @@ class ClientDao:
         result = await self.db.execute(
             select(Client).options(
                 selectinload(Client.user),
-                selectinload(Client.products).selectinload(ClientProduct.product),
+                selectinload(Client.products)
+                .selectinload(ClientProduct.product)
+                .selectinload(Product.base_expenses),
                 selectinload(Client.orders)
                 .selectinload(Order.order_products)
                 .selectinload(OrderProduct.warehouse_product)
-                .selectinload(WarehouseProduct.product),
+                .selectinload(WarehouseProduct.product)
+                .selectinload(Product.base_expenses),
             )
         )
         return result.scalars().all()

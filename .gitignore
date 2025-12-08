@@ -70,11 +70,10 @@ docker-compose.override.yml
 
 
 !.env.example
-
+venv/
 # ---- Misc ----
 # Local development data, temp folders
 tmp/
-data/
 uploads/*
 !uploads/.gitkeep
 media/

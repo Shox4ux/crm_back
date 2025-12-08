@@ -16,4 +16,4 @@ class Settings(BaseSettings):
     EXPIRES: int = 60
 
     class Config:
-        env_file = ".env"
+        env_file = ".env.prod"
