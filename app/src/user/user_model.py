@@ -6,8 +6,10 @@ from app.utils import table_names as tbnames
 class User(ComCharModel):
     __tablename__ = tbnames.USER
 
-    role = Column(Integer, nullable=False)
-    username = Column(String(225), nullable=False)
-    password = Column(String(225), nullable=False)
-    hashed_password = Column(String(225), nullable=False)
-    is_active = Column(Boolean, default=True)
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True, nullable=True)
+    password_hash = Column(String, nullable=True)
+    role = Column(Integer, default=0, nullable=True)  # 0 = client, 1 = admin
+    img = Column(String, nullable=True)
+    phone = Column(String, nullable=True)
+    address = Column(String, nullable=True)

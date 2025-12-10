@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends
 from app.src.user.user_dao import UserDao, get_user_dao
 from .auth_schema import AuthData, TokenRead, TokenPayload
 from app.src.user.user_model import User
-from app.src.user.user_schema import UserRead
+
+# from app.src.user.user_schema import UserRead
 from app.src.auth import auth_method as mtds
 from enum import Enum
 from app.utils.custom_exceptions import AuthError, InactiveUser
@@ -28,7 +29,7 @@ async def login_for_access_token(data: AuthData, dao: UserDao = Depends(get_user
     return mtds.create_access_token(data.role, user.id)
 
 
-@router.post("/verify_user", response_model=UserRead)
+@router.post("/verify_user")
 async def token(token: str, dao: UserDao = Depends(get_user_dao)):
 
     payload: TokenPayload = mtds.decode_access_token(token)
