@@ -1,29 +1,84 @@
 from pydantic import BaseModel
-from datetime import datetime
 from typing import Optional
+from fastapi import Form, UploadFile
+from datetime import datetime
+from app.src.user.user_model import User
+from app.src.auth.auth_method import get_pass_hashed
 
 
-class UserRead(BaseModel):
-    id: int
-    username: str
-    role: int
-    password: str
-    hashed_password: Optional[str]
-    is_active: bool
-    created_at: datetime
+# Response model (never exposes password/hash)
+class UserResponse(BaseModel):
+    id: Optional[int]
+    username: Optional[str] = None
+    role: Optional[int] = None
+    img: Optional[str] = None
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    created_at: Optional[datetime] = None
 
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
-class UserWrite(BaseModel):
-    username: str
-    password: str
-    hashed_password: Optional[str]
-    role: int
+# Create schemas using Form (nullable fields for img)
+class CreateAsClient:
+    def __init__(
+        self,
+        username: str = Form(...),
+        password: str = Form(...),
+        phone: Optional[str] = Form(None),
+        address: Optional[str] = Form(None),
+        img: Optional[UploadFile] = None,
+    ):
+        self.username = username
+        self.password = password
+        self.phone = phone
+        self.address = address
+        self.img = img
+
+    def to_user(self, img_path) -> User:
+        return User(
+            username=self.username,
+            password_hash=get_pass_hashed(self.password),
+            role=0,
+            img=img_path,
+            phone=self.phone,
+            address=self.address,
+        )
 
 
-class UserUpdt(BaseModel):
-    is_active: Optional[bool]
-    password: Optional[str]
-    hashed_password: Optional[str]
+class CreateAsAdmin:
+    def __init__(
+        self,
+        username: str = Form(...),
+        password: str = Form(...),
+        img: Optional[UploadFile] = None,
+    ):
+        self.username = username
+        self.password = password
+        self.img = img
+
+    def to_user(self, img_path) -> User:
+        return User(
+            username=self.username,
+            password_hash=get_pass_hashed(self.password),
+            role=0,
+            img=img_path,
+        )
+
+
+# Update schemas (all fields optional)
+class UserUpdate:
+    def __init__(
+        self,
+        username: Optional[str] = Form(None),
+        password: Optional[str] = Form(None),
+        phone: Optional[str] = Form(None),
+        address: Optional[str] = Form(None),
+        img: Optional[UploadFile] = None,
+    ):
+        self.username = username
+        self.password = password
+        self.phone = phone
+        self.address = address
+        self.img = img

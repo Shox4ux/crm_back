@@ -2,7 +2,8 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 from app.src.product.product_schema import ProductRead
-from app.src.user.user_schema import UserRead
+
+# from app.src.user.user_schema import UserRead
 from app.src.order_product.order_product_schema import OrderProdRead
 
 
@@ -43,7 +44,7 @@ class OrderForClient(OrderBase):
 
 class ClientForOrder(ClientBase):
     id: int
-    user: UserRead
+    # user: UserRead
     products: Optional[list[ClientPrRead]]
     created_at: datetime
 

@@ -39,6 +39,13 @@ class ItemNotFound(Exception):
         super().__init__(self.message)
 
 
+class AlreadyExists(Exception):
+    def __init__(self, item_param: int, item: str):
+        self.item_id = item_param
+        self.message = f"{item.upper()} with id {item_param} already exists."
+        super().__init__(self.message)
+
+
 class TokenExpired(Exception):
     def __init__(self):
         self.message = "Token has expired"
