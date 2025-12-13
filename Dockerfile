@@ -29,3 +29,4 @@ COPY /.env .env
 # Run Alembic migrations before starting the app
 COPY ./app /crm/app
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
