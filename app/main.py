@@ -1,7 +1,6 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from .src.warehouse import warehouse_router
 from .src.product import product_router
 from .src.admin import admin_router
@@ -11,11 +10,13 @@ from .src.order import order_router
 from .src.order_product import order_product_router
 from .src.warehouse_product import warehouse_product_router
 from .src.product_expense import product_expense_router
-
 from .src.auth import auth_router
 from .utils.custom_exceptions import global_exception_handler
-
 from app.settings import Settings
+import subprocess
+import hmac
+import hashlib
+import os
 
 settings = Settings()
 
@@ -36,31 +37,29 @@ app.mount(
     "/uploads", StaticFiles(directory=settings.ASSETS_FOLDER_PATH), name="uploads"
 )
 
-# @app.middleware("http")
-# async def log_requests(request: Request, call_next):
-#     # Read and clone the body (you can only read it once)
-#     body = await request.body()
-#     try:
-#         body_data = json.loads(body.decode("utf-8"))
-#     except Exception:
-#         body_data = body.decode("utf-8") if body else None
-
-#     print(f"\n➡️  {request.method} {request.url.path}")
-#     if body_data:
-#         print(f"📦 Body: {json.dumps(body_data, indent=2, ensure_ascii=False)}")
-#     else:
-#         print("📭 Empty body")
-
-#     # Call the actual endpoint
-#     response = await call_next(request)
-#     print(f"⬅️  Response status: {response.status_code}\n")
-
-#     return response
-
 
 @app.get("/")
 async def main():
     return "We are creating crm project here"
+
+
+GITHUB_SECRET = b"SUPER_SECRET_STRING"
+
+
+def verify_signature(payload_body, signature_header):
+    mac = hmac.new(GITHUB_SECRET, msg=payload_body, digestmod=hashlib.sha256)
+    expected = "sha256=" + mac.hexdigest()
+    return hmac.compare_digest(expected, signature_header)
+
+
+@app.post("/deploy")
+async def deploy(request: Request):
+    signature = request.headers.get("X-Hub-Signature-256")
+    body = await request.body()
+    if not signature or not verify_signature(body, signature):
+        raise HTTPException(status_code=403, detail="Invalid signature")
+    subprocess.Popen(["/root/crm_back/deploy.sh"])
+    return {"status": "deploy started"}
 
 
 app.include_router(auth_router.router)
