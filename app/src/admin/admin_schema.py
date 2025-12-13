@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 
-# from app.src.user.user_schema import UserRead
+from app.src.user.user_schema import UserResponse
 
 
 class AdminBase(BaseModel):
@@ -13,10 +13,10 @@ class AdminWrite(AdminBase):
     pass
 
 
-class AdminRead(BaseModel):
+class AdminResponse(BaseModel):
     id: int
     permission: int
-    # user: UserRead
+    user: UserResponse
     created_at: datetime
 
     class Config:

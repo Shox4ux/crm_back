@@ -1,7 +1,7 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .admin_schema import AdminWrite, AdminRead
+from .admin_schema import AdminWrite, AdminResponse
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from app.src.admin.admin_model import Admin, AdminPermission
@@ -13,7 +13,7 @@ class AdminDao:
     def __init__(self, db: AsyncSession):
         self.db: AsyncSession = db
 
-    async def get_one_by_uid(self, user_id: int) -> AdminRead | None:
+    async def get_one_by_uid(self, user_id: int) -> AdminResponse | None:
         result = await self.db.execute(
             select(Admin)
             .options(selectinload(Admin.user))
@@ -21,7 +21,7 @@ class AdminDao:
         )
         return result.scalar_one_or_none()
 
-    async def get_all(self) -> list[AdminRead] | None:
+    async def get_all(self) -> list[AdminResponse] | None:
         result = await self.db.execute(select(Admin).options(selectinload(Admin.user)))
         return result.scalars().all()
 

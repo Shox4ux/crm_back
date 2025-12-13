@@ -25,24 +25,19 @@ class UserDao:
     async def create_as_admin(
         self, data: CreateAsAdmin, img_path: str | None
     ) -> User | None:
-        user = User(
-            username=data.username,
-            password_hash=get_pass_hashed(data.password),
-            role=1,
-            img=img_path,
-        )
+        user = data.to_user(img_path=img_path)
         self.db.add(user)
         await self.db.commit()
         await self.db.refresh(user)
         return user
 
-    async def get_all_clients(self):
-        result = await self.db.execute(select(User).where(User.role == 0))
-        return result.scalars().all()
+    async def activate_user(self, user: User) -> User | None:
+        if not user.is_active:
+            user.is_active = True
 
-    async def get_all_admins(self):
-        result = await self.db.execute(select(User).where(User.role == 1))
-        return result.scalars().all()
+        await self.db.commit()
+        await self.db.refresh(user)
+        return user
 
     async def get_user_by_id(self, user_id: int) -> User | None:
         result = await self.db.execute(select(User).where(User.id == user_id))

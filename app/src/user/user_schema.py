@@ -63,7 +63,7 @@ class CreateAsAdmin:
         return User(
             username=self.username,
             password_hash=get_pass_hashed(self.password),
-            role=0,
+            role=1,
             img=img_path,
         )
 
