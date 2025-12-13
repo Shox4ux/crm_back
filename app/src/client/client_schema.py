@@ -2,9 +2,8 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 from app.src.product.product_schema import ProductRead
-
-# from app.src.user.user_schema import UserRead
-from app.schemas.common_schemas import ClientBase, OrderForClient
+from app.src.user.user_schema import UserResponse
+from app.schemas.common_schemas import OrderForClient
 
 
 class ClientProdRead(BaseModel):
@@ -24,18 +23,9 @@ class ClientProdUpdt(BaseModel):
     custom_price: float
 
 
-class ClientWrite(ClientBase):
-    user_id: int
-    pass
-
-
-class ClientUpdt(ClientBase):
-    pass
-
-
-class ClientRead(ClientBase):
+class ClientResponse(BaseModel):
     id: int
-    # user: UserRead
+    user: UserResponse
     products: Optional[list[ClientProdRead]]
     orders: Optional[list[OrderForClient]]
     created_at: datetime
