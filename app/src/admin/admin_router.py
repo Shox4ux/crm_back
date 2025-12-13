@@ -3,6 +3,9 @@ from .admin_dao import AdminDao, get_admin_dao
 from typing import Optional
 from app.utils.custom_exceptions import ItemNotFound
 from app.src.admin.admin_schema import AdminRead, AdminWrite, AdminBase
+from app.src.user.user_dao import UserDao, get_user_dao
+from app.src.user.user_schema import CreateAsAdmin
+from app.utils.img_uploader import img_uploader
 
 router = APIRouter(prefix="/admins", tags=["admin"])
 
@@ -22,8 +25,15 @@ async def get_all(dao: AdminDao = Depends(get_admin_dao)):
 
 
 @router.post("/create", response_model=AdminBase)
-async def create(data: AdminWrite, dao: AdminDao = Depends(get_admin_dao)):
-    admin = await dao.create(data)
+async def create(
+    data: CreateAsAdmin = Depends(),
+    a_dao: AdminDao = Depends(get_admin_dao),
+    u_dao: UserDao = Depends(get_user_dao),
+):
+    user = await u_dao.create_as_admin(data)
+    if not user:
+        raise Exception()
+    admin = await a_dao.create(user.id)
     if not admin:
         raise Exception()
     return admin

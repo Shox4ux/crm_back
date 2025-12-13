@@ -13,14 +13,18 @@ class UserDao:
     def __init__(self, db: AsyncSession):
         self.db: AsyncSession = db
 
-    async def create_client(self, data: CreateAsClient, img_path: str | None):
+    async def create_as_client(
+        self, data: CreateAsClient, img_path: str | None
+    ) -> User | None:
         user = data.to_user(img_path)
         self.db.add(user)
         await self.db.commit()
         await self.db.refresh(user)
         return user
 
-    async def create_admin(self, data: CreateAsAdmin, img_path: str | None):
+    async def create_as_admin(
+        self, data: CreateAsAdmin, img_path: str | None
+    ) -> User | None:
         user = User(
             username=data.username,
             password_hash=get_pass_hashed(data.password),
@@ -48,7 +52,7 @@ class UserDao:
         result = await self.db.execute(select(User).where(User.username == username))
         return result.scalars().first()
 
-    async def delete_user(self, user: User) -> bool:
+    async def delete(self, user: User) -> bool:
         await self.db.delete(user)
         await self.db.commit()
         return True
@@ -68,6 +72,9 @@ class UserDao:
 
         if data.address is not None:
             user.address = data.address
+
+        if data.is_active is not None:
+            user.is_active = data.is_active
 
         await self.db.commit()
         await self.db.refresh(user)

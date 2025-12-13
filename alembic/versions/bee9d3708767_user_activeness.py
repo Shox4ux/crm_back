@@ -1,8 +1,8 @@
-"""init
+"""user activeness
 
-Revision ID: 26bbfef881e0
+Revision ID: bee9d3708767
 Revises: 
-Create Date: 2025-11-24 22:24:27.906634
+Create Date: 2025-12-10 20:17:32.444626
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '26bbfef881e0'
+revision: str = 'bee9d3708767'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -35,16 +35,20 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('users',
-    sa.Column('role', sa.Integer(), nullable=False),
-    sa.Column('username', sa.String(length=225), nullable=False),
-    sa.Column('password', sa.String(length=225), nullable=False),
-    sa.Column('hashed_password', sa.String(length=225), nullable=False),
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('username', sa.String(), nullable=True),
+    sa.Column('password_hash', sa.String(), nullable=True),
+    sa.Column('role', sa.Integer(), nullable=True),
+    sa.Column('img', sa.String(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
-    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('phone', sa.String(), nullable=True),
+    sa.Column('address', sa.String(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_index(op.f('ix_users_id'), 'users', ['id'], unique=False)
+    op.create_index(op.f('ix_users_username'), 'users', ['username'], unique=True)
     op.create_table('warehouses',
     sa.Column('name', sa.String(length=225), nullable=False),
     sa.Column('address', sa.String(length=225), nullable=True),
@@ -144,6 +148,8 @@ def downgrade() -> None:
     op.drop_table('clients')
     op.drop_table('admins')
     op.drop_table('warehouses')
+    op.drop_index(op.f('ix_users_username'), table_name='users')
+    op.drop_index(op.f('ix_users_id'), table_name='users')
     op.drop_table('users')
     op.drop_table('products')
     # ### end Alembic commands ###
