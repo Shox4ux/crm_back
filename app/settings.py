@@ -1,4 +1,5 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
+import os
 
 
 class Settings(BaseSettings):
@@ -15,5 +16,6 @@ class Settings(BaseSettings):
     TOKEN_KEY: str
     EXPIRES: int = 60
 
-    class Config:
-        env_file = ".env.prod"
+    model_config = SettingsConfigDict(
+        env_file=os.getenv("ENV_FILE", ".env"), env_file_encoding="utf-8"
+    )
