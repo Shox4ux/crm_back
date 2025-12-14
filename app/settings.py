@@ -1,8 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import os
 
-# test
-
 
 class Settings(BaseSettings):
     ALGORITHM: str
