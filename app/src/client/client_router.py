@@ -86,7 +86,7 @@ async def delete(
     c_dao: ClientDao = Depends(get_c_dao),
     u_dao: UserDao = Depends(get_user_dao),
 ):
-    client = await c_dao.get_by_uid(id)
+    client = await c_dao.get_by_id(id)
     if not client:
         raise Exception()
     res = await u_dao.delete(client.user.id)

@@ -45,9 +45,7 @@ async def create(
     img_path = None
     if img:
         img_path = img_uploader(img)
-
         if not img_path:
-
             raise Exception()
 
     data = ProductWrite(
