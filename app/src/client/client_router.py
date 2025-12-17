@@ -14,12 +14,6 @@ from app.utils.img_uploader import img_uploader, delete_image
 router = APIRouter(prefix="/clients", tags=["client"])
 
 
-@router.get("/get_by_user_id/{user_id}", response_model=Optional[ClientResponse])
-async def get_by_id(user_id: int, dao: ClientDao = Depends(get_c_dao)):
-    client = await dao.get_by_uid(user_id)
-    return client
-
-
 @router.get("/get_all", response_model=Optional[list[ClientResponse]])
 async def get_all(dao: ClientDao = Depends(get_c_dao)):
     clients = await dao.get_all()
@@ -89,10 +83,8 @@ async def delete(
     client = await c_dao.get_by_id(id)
     if not client:
         raise Exception()
-    res = await u_dao.delete(client.user.id)
+    res = await u_dao.delete(client.user)
     if not res:
         raise Exception()
-    result = await c_dao.delete(id)
-    if not result:
-        raise Exception()
+
     return {"message": "Successfully deleted"}

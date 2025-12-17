@@ -10,7 +10,6 @@ from app.src.product.product_schema import (
 )
 from app.utils.img_uploader import img_uploader, delete_image
 from app.src.client.client_dao import ClientDao, get_c_dao
-from app.src.product_expense.product_expense_dao import get_prod_exp_dao, ProdExpDao
 from app.src.client.client_schema import ClientProdWrite
 
 router = APIRouter(prefix="/products", tags=["product"])
