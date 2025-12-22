@@ -1,15 +1,11 @@
 from fastapi import APIRouter, status, Depends
-from .order_product_dao import OrderProductDao, get_orp_dao
+from .dao import OrderProductDao, get_orp_dao
 from typing import Optional
 from app.utils.custom_exceptions import ItemNotFound
-from app.src.product.product_schema import ProductBase, ProductRead
-from app.src.warehouse_product.warehouse_product_schema import WareProdRead
-from app.src.warehouse_product.warehouse_product_dao import (
-    WarehouseProductDao,
-    get_wp_dao,
-)
-from app.src.product.product_dao import ProductDao, get_prod_dao
-from app.src.order_product.order_product_schema import (
+from app.src.product.schema import ProductBase, ProductRead
+from app.src.warehouse_product.schema import WareProdRead
+from app.src.product.dao import ProductDao, get_prod_dao
+from app.src.order_product.schema import (
     OrderProdRead,
     OrderProdBase,
     OrderBulkWrite,

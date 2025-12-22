@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from datetime import datetime
 
 
-from app.src.product.product_schema import ProductRead, ProductReadWP
+from app.src.product.schema import ProductRead, ProductReadWP
 
 
 class WareProdBase(BaseModel):

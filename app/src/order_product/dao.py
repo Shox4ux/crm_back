@@ -1,10 +1,10 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .order_product_schema import OrderProdRead, OrderBulkWrite, OrderProdBase
+from .schema import OrderProdRead, OrderBulkWrite, OrderProdBase
 from sqlalchemy import select
-from app.src.order_product.order_product_model import OrderProduct
-from app.src.warehouse_product.warehouse_product_model import WarehouseProduct
+from app.src.order_product.model import OrderProduct
+from app.src.warehouse_product.model import WarehouseProduct
 from sqlalchemy.orm import selectinload
 from app.utils.custom_exceptions import ItemNotFound
 from typing import Optional

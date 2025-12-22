@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status, Depends
-from .order_dao import OrderDao, get_or_dao
+from .dao import OrderDao, get_or_dao
 from typing import Optional
 from app.src.order.order_schema import OrderRead, OrderBase, OrderWrite, OrderUpdt
 

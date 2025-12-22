@@ -1,10 +1,10 @@
 from fastapi import APIRouter, status, Depends
-from .admin_dao import AdminDao, get_admin_dao
+from .dao import AdminDao, get_admin_dao
 from typing import Optional
 from app.utils.custom_exceptions import ItemNotFound
-from app.src.user.user_dao import UserDao, get_user_dao
+from app.src.user.dao import UserDao, get_user_dao
 from app.utils.img_uploader import img_uploader
-from .admin_schema import AdminCreate, AdminResponse
+from .schema import AdminCreate, AdminResponse
 
 router = APIRouter(prefix="/admins", tags=["admin"])
 

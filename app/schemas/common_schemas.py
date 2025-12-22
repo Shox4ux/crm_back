@@ -1,9 +1,9 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
-from app.src.product.product_schema import ProductRead
-from app.src.user.user_schema import UserResponse
-from app.src.order_product.order_product_schema import OrderProdRead
+from app.src.product.schema import ProductRead
+from app.src.user.schema import UserResponse
+from app.src.order_product.schema import OrderProdRead
 
 
 class ClientPrRead(BaseModel):

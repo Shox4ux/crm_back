@@ -1,11 +1,9 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .admin_schema import AdminWrite, AdminResponse
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
-from app.src.admin.admin_model import Admin, AdminPermission
-from app.utils.custom_exceptions import ItemNotFound
+from app.src.admin.model import Admin
 
 
 class AdminDao:

@@ -2,10 +2,10 @@ from pydantic import BaseModel
 from datetime import datetime
 from fastapi import Form, UploadFile
 from typing import Optional
-from app.src.user.user_model import User
-from .admin_model import Admin
-from app.src.user.user_schema import UserResponse
-from app.src.auth.auth_method import get_pass_hashed
+from app.src.user.model import User
+from .model import Admin
+from app.src.user.schema import UserResponse
+from app.src.auth.method import get_pass_hashed
 
 
 class AdminBase(BaseModel):

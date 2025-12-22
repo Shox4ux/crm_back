@@ -3,12 +3,12 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from .order_schema import OrderRead, OrderWrite, OrderUpdt
 from sqlalchemy import select, update, delete
-from app.src.order.order_model import Order
+from app.src.order.model import Order
 from sqlalchemy.orm import selectinload
 from app.utils.custom_exceptions import ItemNotFound
-from app.src.warehouse_product.warehouse_product_model import WarehouseProduct
-from app.src.order_product.order_product_model import OrderProduct
-from app.src.client.client_model import Client
+from app.src.warehouse_product.model import WarehouseProduct
+from app.src.order_product.model import OrderProduct
+from app.src.client.model import Client
 
 
 class OrderDao:
@@ -65,7 +65,6 @@ class OrderDao:
 
     async def update_status(self, id: int, data: OrderUpdt):
         result = await self.db.get_one(Order, id)
-
         if not result:
             raise ItemNotFound(item_id=id, item="order")
 

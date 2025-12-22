@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
-from app.src.product_expense.product_expense_schema import ProdExpRead, ProdExpWrite
+from app.src.product_expense.schema import ProdExpRead, ProdExpWrite
 
 
 class ProductBase(BaseModel):

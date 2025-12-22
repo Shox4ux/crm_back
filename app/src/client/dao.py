@@ -1,19 +1,19 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .client_schema import (
+from .schema import (
     ClientResponse,
     ClientProdWrite,
     ClientProdUpdt,
 )
 from sqlalchemy import select
-from .client_model import Client, ClientProduct
+from .model import Client, ClientProduct
 from sqlalchemy.orm import selectinload
 from app.utils.custom_exceptions import ItemNotFound
-from app.src.order.order_model import Order
-from app.src.order_product.order_product_model import OrderProduct
-from app.src.warehouse_product.warehouse_product_model import WarehouseProduct
-from app.src.product.product_model import Product
+from app.src.order.model import Order
+from app.src.order_product.model import OrderProduct
+from app.src.warehouse_product.model import WarehouseProduct
+from app.src.product.model import Product
 
 
 class ClientDao:

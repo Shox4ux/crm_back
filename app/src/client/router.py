@@ -1,10 +1,10 @@
 from fastapi import APIRouter, status, Depends
-from .client_dao import ClientDao, get_c_dao
+from .dao import ClientDao, get_c_dao
 from typing import Optional
-from .client_schema import ClientResponse, ClientProdWrite, ClientProdUpdt, ClientCreate
-from app.src.user.user_schema import UserUpdate
-from app.src.product.product_dao import ProductDao, get_prod_dao
-from app.src.user.user_dao import UserDao, get_user_dao
+from .schema import ClientResponse, ClientProdWrite, ClientProdUpdt, ClientCreate
+from app.src.user.schema import UserUpdate
+from app.src.product.dao import ProductDao, get_prod_dao
+from app.src.user.dao import UserDao, get_user_dao
 from app.utils.img_uploader import img_uploader, delete_image
 
 router = APIRouter(prefix="/clients", tags=["client"])

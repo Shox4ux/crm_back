@@ -1,9 +1,9 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .warehouse_product_schema import WareProdRead, WareProdWrite
+from .schema import WareProdRead, WareProdWrite
 from sqlalchemy import select
-from app.src.warehouse_product.warehouse_product_model import WarehouseProduct
+from app.src.warehouse_product.model import WarehouseProduct
 from sqlalchemy.orm import selectinload
 from app.utils.custom_exceptions import ItemNotFound
 

@@ -2,7 +2,7 @@ from datetime import timedelta, timezone, datetime
 from jwt.exceptions import InvalidTokenError
 import jwt
 from pwdlib import PasswordHash
-from app.src.auth.auth_schema import TokenPayload, TokenRead
+from app.src.auth.schema import TokenPayload, TokenRead
 from app.settings import Settings
 from app.utils.custom_exceptions import InvalidToken, TokenExpired, ServerError
 

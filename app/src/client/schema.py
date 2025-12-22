@@ -1,13 +1,13 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
-from app.src.product.product_schema import ProductRead
-from app.src.user.user_schema import UserResponse
+from app.src.product.schema import ProductRead
+from app.src.user.schema import UserResponse
 from app.schemas.common_schemas import OrderForClient
 from fastapi import Form, UploadFile
-from app.src.user.user_model import User
-from .client_model import Client
-from app.src.auth.auth_method import get_pass_hashed
+from app.src.user.model import User
+from .model import Client
+from app.src.auth.method import get_pass_hashed
 
 
 class ClientProdRead(BaseModel):

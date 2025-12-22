@@ -1,23 +1,28 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI
-from .src.warehouse import warehouse_router
-from .src.product import product_router
-from .src.admin import admin_router
-from .src.client import client_router
-from .src.user import user_router
-from .src.order import order_router
-from .src.order_product import order_product_router
-from .src.warehouse_product import warehouse_product_router
-from .src.product_expense import product_expense_router
-from .src.auth import auth_router
+from .src.warehouse.router import router as warehouse_router
+from .src.product.router import router as product_router
+from .src.admin.router import router as admin_router
+from .src.client.router import router as client_router
+from .src.user.router import router as user_router
+from .src.order.router import router as order_router
+from .src.order_product.router import router as order_product_router
+from .src.warehouse_product.router import router as warehouse_product_router
+from .src.product_expense.router import router as product_expense_router
+from .src.auth.router import router as auth_router
 from app.settings import Settings
 
 
 settings = Settings()
 
 
-app = FastAPI()
+app = FastAPI(
+    title="CRM API",
+    description="API for CRM project",
+    version="0.0.1",
+    openapi_url="/openapi.json",
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -39,36 +44,13 @@ async def main():
     return "We are creating crm project here"
 
 
-# GITHUB_SECRET = b"SUPER_SECRET_STRING"
-
-
-# def verify_signature(payload_body, signature_header):
-#     mac = hmac.new(GITHUB_SECRET, msg=payload_body, digestmod=hashlib.sha256)
-#     expected = "sha256=" + mac.hexdigest()
-#     return hmac.compare_digest(expected, signature_header)
-
-
-# # lets try this code
-# @app.post("/deploy")
-# async def deploy(request: Request):
-#     signature = request.headers.get("X-Hub-Signature-256")
-#     body = await request.body()
-#     if not signature or not verify_signature(body, signature):
-#         raise HTTPException(status_code=403, detail="Invalid signature")
-#     subprocess.Popen(["/root/crm_back/deploy.sh"])
-#     return {"status": "deploy started"}
-
-
-app.include_router(auth_router.router)
-app.include_router(user_router.router)
-
-app.include_router(admin_router.router)
-app.include_router(client_router.router)
-app.include_router(product_router.router)
-app.include_router(product_expense_router.router)
-
-app.include_router(warehouse_router.router)
-app.include_router(warehouse_product_router.router)
-
-app.include_router(order_router.router)
-app.include_router(order_product_router.router)
+app.include_router(auth_router)
+app.include_router(user_router)
+app.include_router(admin_router)
+app.include_router(client_router)
+app.include_router(product_router)
+app.include_router(product_expense_router)
+app.include_router(warehouse_router)
+app.include_router(warehouse_product_router)
+app.include_router(order_router)
+app.include_router(order_product_router)

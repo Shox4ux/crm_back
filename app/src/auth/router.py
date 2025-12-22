@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends
-from app.src.user.user_dao import UserDao, get_user_dao
-from .auth_schema import AuthData, TokenRead, TokenPayload
-from app.src.user.user_model import User
-from app.src.auth import auth_method as mtds
+from app.src.user.dao import UserDao, get_user_dao
+from .schema import AuthData, TokenRead, TokenPayload
+from app.src.user.model import User
+from app.src.auth import method as mtds
 from enum import Enum
 from app.utils.custom_exceptions import AuthError, InactiveUser
-from app.src.user.user_schema import UserResponse
+from app.src.user.schema import UserResponse
 
 
 class AuthRole(Enum):

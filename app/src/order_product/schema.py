@@ -1,7 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel
 from datetime import datetime
-from app.src.warehouse_product.warehouse_product_schema import WareProdRead
+from app.src.warehouse_product.schema import WareProdRead
 
 
 class OrderProdBase(BaseModel):

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, Depends
-from .user_dao import UserDao, get_user_dao
+from .dao import UserDao, get_user_dao
 from app.utils.custom_exceptions import ItemNotFound
-from .user_schema import UserResponse
+from .schema import UserResponse
 
 router = APIRouter(prefix="/users", tags=["user"])
 

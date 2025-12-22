@@ -1,8 +1,8 @@
 from fastapi import APIRouter, status, Depends
-from .product_expense_dao import ProdExpDao, get_prod_exp_dao
+from .dao import ProdExpDao, get_prod_exp_dao
 from typing import Optional
 from app.utils.custom_exceptions import ItemNotFound
-from app.src.product_expense.product_expense_schema import (
+from app.src.product_expense.schema import (
     ProdExpRead,
     ProdExpBulkWrite,
     ProdExpWrite,

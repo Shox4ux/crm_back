@@ -1,9 +1,9 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .product_expense_schema import ProdExpRead, ProdExpWrite, ProdExpBulkWrite
+from .schema import ProdExpRead, ProdExpWrite, ProdExpBulkWrite
 from sqlalchemy import select
-from app.src.product_expense.product_expense_model import ProductExpense
+from app.src.product_expense.model import ProductExpense
 from app.utils.custom_exceptions import ItemNotFound
 from typing import Optional
 

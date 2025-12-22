@@ -1,16 +1,16 @@
 from fastapi import APIRouter, File, status, Depends, UploadFile, Form
-from .product_dao import ProductDao, get_prod_dao
+from .dao import ProductDao, get_prod_dao
 from typing import Optional
 from app.utils.custom_exceptions import ItemNotFound
-from app.src.product.product_schema import (
+from app.src.product.schema import (
     ProductRead,
     ProductWrite,
     ProductSimpleRead,
     ProductBase,
 )
 from app.utils.img_uploader import img_uploader, delete_image
-from app.src.client.client_dao import ClientDao, get_c_dao
-from app.src.client.client_schema import ClientProdWrite
+from app.src.client.dao import ClientDao, get_c_dao
+from app.src.client.schema import ClientProdWrite
 
 router = APIRouter(prefix="/products", tags=["product"])
 

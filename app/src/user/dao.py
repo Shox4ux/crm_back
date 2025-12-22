@@ -1,10 +1,10 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.src.user.user_schema import UserUpdate
+from app.src.user.schema import UserUpdate
 from sqlalchemy import select
-from app.src.user.user_model import User
-from app.src.auth.auth_method import get_pass_hashed
+from app.src.user.model import User
+from app.src.auth.method import get_pass_hashed
 
 
 class UserDao:
