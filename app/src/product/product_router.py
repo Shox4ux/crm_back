@@ -36,7 +36,6 @@ async def create(
     base_price: float = Form(...),
     sell_price: float = Form(...),
     total_quantity: int = Form(...),
-    active_quantity: int = Form(...),
     dao: ProductDao = Depends(get_prod_dao),
     c_dao: ClientDao = Depends(get_c_dao),
 ):
@@ -52,7 +51,7 @@ async def create(
         name=name,
         base_price=base_price,
         total_quantity=total_quantity,
-        active_quantity=active_quantity,
+        active_quantity=total_quantity,
         sell_price=sell_price,
     )
 
@@ -74,7 +73,6 @@ async def update(
     base_price: Optional[float] = Form(None),
     sell_price: Optional[float] = Form(None),
     total_quantity: Optional[int] = Form(None),
-    active_quantity: Optional[int] = Form(None),
     dao: ProductDao = Depends(get_prod_dao),
 ):
     prod = await dao.get_one(id)
@@ -90,7 +88,7 @@ async def update(
         base_price=base_price,
         img_url=img_path,
         sell_price=sell_price,
-        active_quantity=active_quantity,
+        active_quantity=total_quantity,
         total_quantity=total_quantity,
     )
 

@@ -1,12 +1,8 @@
 from fastapi import APIRouter, status, Depends
 from .client_dao import ClientDao, get_c_dao
 from typing import Optional
-from app.src.client.client_schema import (
-    ClientResponse,
-    ClientProdWrite,
-    ClientProdUpdt,
-)
-from app.src.user.user_schema import CreateAsClient, UserUpdate
+from .client_schema import ClientResponse, ClientProdWrite, ClientProdUpdt, ClientCreate
+from app.src.user.user_schema import UserUpdate
 from app.src.product.product_dao import ProductDao, get_prod_dao
 from app.src.user.user_dao import UserDao, get_user_dao
 from app.utils.img_uploader import img_uploader, delete_image
@@ -22,16 +18,16 @@ async def get_all(dao: ClientDao = Depends(get_c_dao)):
 
 @router.post("/create")
 async def create(
-    data: CreateAsClient = Depends(),
+    data: ClientCreate = Depends(),
     c_dao: ClientDao = Depends(get_c_dao),
     p_dao: ProductDao = Depends(get_prod_dao),
     u_dao: UserDao = Depends(get_user_dao),
 ):
     img_path = img_uploader(data.img) if data.img else None
-    user = await u_dao.create_as_client(data, img_path)
+    user = await u_dao.create(data.to_user(img_path))
     if not user:
         raise Exception()
-    client = await c_dao.create(user.id)
+    client = await c_dao.create(data.to_client(user.id))
     if not client:
         raise Exception()
     await _create_client_prods(client.id, p_dao, c_dao)
@@ -70,7 +66,7 @@ async def update(
         delete_image(client.user.img)
         img_path = img_uploader(data.img)
 
-    await u_dao.update_user(client.user, data, img_path)
+    await u_dao.update(client.user, data, img_path)
     return client
 
 

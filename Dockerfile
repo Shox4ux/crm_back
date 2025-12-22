@@ -24,7 +24,7 @@ COPY alembic/ ./alembic
 COPY alembic.ini ./alembic.ini
 
 # Copy environment only if needed
-COPY /.env .env
+COPY /.env.prod .env
 
 # Run Alembic migrations before starting the app
 COPY ./app /crm/app

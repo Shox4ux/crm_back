@@ -15,18 +15,7 @@ services:
       - ./app:/app        # mount your new code as /app
       - /home/ubuntu/uploads:/home/ubuntu/uploads 
       
-  crm_webhook:
-    build:
-      context: .
-      dockerfile: Dockerfile.webhook
-    container_name: crm_webhook
-    restart: always
-    ports:
-      - "9000:9000"
-    volumes:
-      - .:/crm   # allows deploy.sh + git pull
-    depends_on:
-      - crm_back
+  
 
   crm_db:
     image: postgres:15

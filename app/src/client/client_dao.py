@@ -60,12 +60,11 @@ class ClientDao:
         )
         return result.scalars().all()
 
-    async def create(self, user_id: int) -> Client:
-        new = Client(user_id=user_id)
-        self.db.add(new)
+    async def create(self, client: Client) -> Client:
+        self.db.add(client)
         await self.db.commit()
-        await self.db.refresh(new)
-        return new
+        await self.db.refresh(client)
+        return client
 
     async def create_cp(self, data: ClientProdWrite):
         new = ClientProduct(**data.model_dump())

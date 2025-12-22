@@ -13,7 +13,7 @@ class AdminDao:
     def __init__(self, db: AsyncSession):
         self.db: AsyncSession = db
 
-    async def get_one_by_uid(self, user_id: int) -> AdminResponse | None:
+    async def get_by_uid(self, user_id: int) -> Admin:
         result = await self.db.execute(
             select(Admin)
             .options(selectinload(Admin.user))
@@ -21,23 +21,23 @@ class AdminDao:
         )
         return result.scalar_one_or_none()
 
-    async def get_all(self) -> list[AdminResponse] | None:
+    async def get_by_id(self, id: int) -> Admin:
+        result = await self.db.execute(
+            select(Admin).options(selectinload(Admin.user)).where(Admin.id == id)
+        )
+        return result.scalar_one_or_none()
+
+    async def get_all(self) -> list[Admin] | None:
         result = await self.db.execute(select(Admin).options(selectinload(Admin.user)))
         return result.scalars().all()
 
-    async def create(self, user_id: int) -> Admin:
-        new = Admin(user_id=user_id, permission=AdminPermission.SUB.value)
-        self.db.add(new)
+    async def create(self, admin: Admin) -> Admin:
+        self.db.add(admin)
         await self.db.commit()
-        await self.db.refresh(new)
-        return new
+        await self.db.refresh(admin)
+        return admin
 
-    async def delete(self, user_id: int) -> bool:
-        result = await self.db.execute(select(Admin).where(Admin.user_id == user_id))
-        admin = result.scalar_one_or_none()
-        if not admin:
-            raise ItemNotFound(item_id=user_id, item="admin")
-
+    async def delete(self, admin: Admin) -> bool:
         await self.db.delete(admin)
         await self.db.commit()
         return True
