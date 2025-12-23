@@ -14,12 +14,21 @@ async def select_user_by_username(username: str, dao: UserDao = Depends(get_user
     return user
 
 
-@router.get("/activate/{id}", response_model=UserResponse)
-async def get_user(id: int, dao: UserDao = Depends(get_user_dao)):
+@router.patch("/activate/{id}", response_model=UserResponse)
+async def activate_user(id: int, dao: UserDao = Depends(get_user_dao)):
     user = await dao.get_by_id(id)
     if not user:
         raise ItemNotFound(item_id=id, item="user")
     user = await dao.activate(user)
+    return user
+
+
+@router.patch("/disactivate/{id}", response_model=UserResponse)
+async def disactivate_user(id: int, dao: UserDao = Depends(get_user_dao)):
+    user = await dao.get_by_id(id)
+    if not user:
+        raise ItemNotFound(item_id=id, item="user")
+    user = await dao.disactivate(user)
     return user
 
 

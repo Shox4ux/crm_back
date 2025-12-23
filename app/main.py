@@ -12,6 +12,7 @@ from .src.warehouse_product.router import router as warehouse_product_router
 from .src.product_expense.router import router as product_expense_router
 from .src.auth.router import router as auth_router
 from app.settings import Settings
+from app.utils.custom_exceptions import global_exception_handler
 
 
 settings = Settings()
@@ -32,7 +33,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# app.add_exception_handler(Exception, global_exception_handler)
+app.add_exception_handler(Exception, global_exception_handler)
 
 app.mount(
     "/uploads", StaticFiles(directory=settings.ASSETS_FOLDER_PATH), name="uploads"

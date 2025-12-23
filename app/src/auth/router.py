@@ -18,7 +18,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/login", response_model=TokenRead)
 async def login_for_access_token(data: AuthData, dao: UserDao = Depends(get_user_dao)):
-    user: User = await dao.get_user_by_username(username=data.username)
+    user: User = await dao.get_by_username(username=data.username)
 
     if not user:
         raise AuthError()
@@ -36,7 +36,7 @@ async def token(token: str, dao: UserDao = Depends(get_user_dao)):
     if not payload:
         raise Exception()
 
-    user: User = await dao.get_user_by_id(user_id=payload.user_id)
+    user: User = await dao.get_by_id(user_id=payload.user_id)
 
     if not user.is_active:
         raise InactiveUser()

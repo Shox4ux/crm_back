@@ -21,7 +21,13 @@ class UserDao:
     async def activate(self, user: User) -> User:
         if not user.is_active:
             user.is_active = True
+        await self.db.commit()
+        await self.db.refresh(user)
+        return user
 
+    async def disactivate(self, user: User) -> User:
+        if user.is_active:
+            user.is_active = False
         await self.db.commit()
         await self.db.refresh(user)
         return user
