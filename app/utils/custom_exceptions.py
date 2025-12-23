@@ -1,35 +1,48 @@
-from fastapi import FastAPI, Request
+from fastapi import Request
+from fastapi import Request, HTTPException
 from fastapi.responses import JSONResponse
-
-# from app.exceptions import WarehouseNotFoundError, ProductAlreadyExistsError
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 
 async def global_exception_handler(request: Request, exc: Exception):
 
+    if isinstance(exc, (HTTPException, StarletteHTTPException)):
+        raise exc
+
+    if isinstance(exc, RequestValidationError):
+        return JSONResponse(
+            status_code=422,
+            content={"detail": exc.errors()},
+        )
+
     if isinstance(exc, ItemNotFound):
-        return JSONResponse(status_code=404, content={"message": exc.message})
+        return JSONResponse(status_code=404, content={"detail": exc.message})
 
     if isinstance(exc, InvalidToken):
-        return JSONResponse(status_code=403, content={"message": exc.message})
+        return JSONResponse(status_code=403, content={"detail": exc.message})
 
     if isinstance(exc, InactiveUser):
-        return JSONResponse(status_code=403, content={"message": exc.message})
+        return JSONResponse(status_code=403, content={"detail": exc.message})
 
     if isinstance(exc, TokenExpired):
-        return JSONResponse(status_code=403, content={"message": exc.message})
+        return JSONResponse(status_code=403, content={"detail": exc.message})
 
     if isinstance(exc, ServerError):
-        return JSONResponse(status_code=505, content={"message": exc.message})
+        return JSONResponse(status_code=500, content={"detail": exc.message})
 
     if isinstance(exc, AuthError):
         return JSONResponse(
             status_code=exc.code,
-            content={"message": exc.message},
+            content={"detail": exc.message},
             headers=exc.headers,
         )
 
-    else:
-        return JSONResponse(status_code=500, content={"detail": "Server has error"})
+    # ---- FALLBACK ----
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal server error"},
+    )
 
 
 class ItemNotFound(Exception):
