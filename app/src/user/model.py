@@ -7,7 +7,7 @@ class User(ComCharModel):
     __tablename__ = tbnames.USER
 
     id = Column(Integer, primary_key=True)
-    username = Column(String, unique=True, nullable=True)
+    username = Column(String, nullable=True)
     password_hash = Column(String, nullable=True)
     role = Column(Integer, default=0, nullable=True)  # 0 = client, 1 = admin
     img = Column(String, nullable=True)

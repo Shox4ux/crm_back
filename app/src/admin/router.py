@@ -23,7 +23,7 @@ async def get_all(dao: AdminDao = Depends(get_admin_dao)):
     return admins
 
 
-@router.post("/create", response_model=AdminResponse)
+@router.post("/create")
 async def create(
     data: AdminCreate = Depends(),
     a_dao: AdminDao = Depends(get_admin_dao),
@@ -36,7 +36,7 @@ async def create(
     admin = await a_dao.create(data.to_admin(user.id))
     if not admin:
         raise Exception()
-    return admin
+    return {"message": "Successfully created"}
 
 
 @router.delete("/delete/{id}", status_code=status.HTTP_200_OK)
