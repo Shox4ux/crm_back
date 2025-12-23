@@ -23,6 +23,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY alembic/ ./alembic
 COPY alembic.ini ./alembic.ini
 
+# Copy environment only if needed
+COPY /.env .env
+
 # Run Alembic migrations before starting the app
 COPY ./app /crm/app
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
