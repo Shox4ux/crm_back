@@ -1,11 +1,7 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .schema import (
-    ClientResponse,
-    ClientProdWrite,
-    ClientProdUpdt,
-)
+from .schema import ClientResponse, ClientProdWrite, ClientProdUpdt
 from sqlalchemy import select
 from .model import Client, ClientProduct
 from sqlalchemy.orm import selectinload
