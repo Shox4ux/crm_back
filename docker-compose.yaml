@@ -6,7 +6,7 @@ services:
     depends_on:
       - crm_db
     env_file:
-      - .env.prod
+      - .env
     ports:
       - "8001:8000"
     volumes:
@@ -16,7 +16,7 @@ services:
     image: postgres:15
     container_name: crm_postgres
     env_file:
-      - .env.prod
+      - .env
     ports:
       - "5434:5432"
     volumes:
