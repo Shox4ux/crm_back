@@ -33,6 +33,14 @@ async def create(data: WarehouseWrite, dao: WarehouseDao = Depends(get_w_dao)):
     return warehouse
 
 
+@router.patch("/update/{id}", response_model=WarehouseRead)
+async def update(id: int, data: WarehouseWrite, dao: WarehouseDao = Depends(get_w_dao)):
+    warehouse = await dao.update(id, data)
+    if not warehouse:
+        raise Exception()
+    return warehouse
+
+
 @router.delete("/delete/{id}", status_code=status.HTTP_200_OK)
 async def delete(id: int, dao: WarehouseDao = Depends(get_w_dao)):
     result = await dao.delete(id)

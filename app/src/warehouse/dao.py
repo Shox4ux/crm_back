@@ -41,6 +41,21 @@ class WarehouseDao:
         )
         return result.scalars().first()
 
+    async def update(self, id: int, data: WarehouseWrite) -> Warehouse:
+        result = await self.db.execute(
+            select(Warehouse)
+            .options(selectinload(Warehouse.products))
+            .where(Warehouse.id == id)
+        )
+        warehouse = result.scalar_one_or_none()
+        if not warehouse:
+            raise ItemNotFound(item_id=id, item="warehouse")
+        for field, value in data.model_dump(exclude_unset=True).items():
+            setattr(warehouse, field, value)
+        await self.db.commit()
+        await self.db.refresh(warehouse)
+        return warehouse
+
     async def delete(self, id: int) -> bool:
         result = await self.db.execute(select(Warehouse).where(Warehouse.id == id))
         warehouse = result.scalar_one_or_none()

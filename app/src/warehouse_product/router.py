@@ -1,14 +1,10 @@
-from fastapi import APIRouter, status, Depends, Response
+from fastapi import APIRouter, status, Depends
 from .dao import WarehouseProductDao, get_wp_dao
 from ..product.dao import ProductDao, get_prod_dao
 from ..product.schema import ProductBase, ProductRead
 from typing import Optional
 from app.utils.custom_exceptions import ItemNotFound
-from app.src.warehouse_product.schema import (
-    WareProdRead,
-    WareProdWrite,
-    WareProdUpdate,
-)
+from app.src.warehouse_product.schema import WareProdRead, WareProdWrite
 
 router = APIRouter(prefix="/warehouse_products", tags=["warehouse_product"])
 
@@ -54,15 +50,6 @@ async def create(
     if not updated_product:
         raise Exception()
 
-    return warehouse_prod
-
-
-@router.post("/update", response_model=WareProdRead)
-async def create(data: WareProdUpdate, dao: WarehouseProductDao = Depends(get_wp_dao)):
-
-    warehouse_prod = await dao.create(data)
-    if not warehouse_prod:
-        raise Exception()
     return warehouse_prod
 
 
