@@ -11,6 +11,7 @@ services:
       - "8001:8000"
     volumes:
       - ./app:/app
+       - /home/ubuntu/uploads:/home/ubuntu/uploads  
 
   crm_db:
     image: postgres:15

@@ -19,15 +19,15 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 
-# Copy Alembic from your actual project (must be in GitHub)
-COPY alembic/ ./alembic
-COPY alembic.ini ./alembic.ini
-
-# Copy environment only if needed
-COPY /.env .env
-
-# Run Alembic migrations before starting the app
+# Copy app
 COPY ./app /crm/app
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--http", "h11"]
 
+COPY .env.prod /.env
+COPY docker-compose.prod.yml docker-compose.yml
+
+# Copy entrypoint
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+CMD ["/entrypoint.sh"]
 
