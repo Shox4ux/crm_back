@@ -1,4 +1,3 @@
-# Use official lightweight Python image
 FROM python:3.10-slim
 
 # Prevent Python from writing .pyc files & buffer stdout/stderr
@@ -19,15 +18,13 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 
-# Copy app
+# Copy Alembic from your actual project (must be in GitHub)
+COPY alembic/ ./alembic
+COPY alembic.ini ./alembic.ini
+
+# Copy environment only if needed
+# COPY  .env .env
+
+# Run Alembic migrations before starting the app
 COPY ./app /crm/app
-
-COPY .env.prod /.env
-COPY docker-compose.prod.yml docker-compose.yml
-
-# Copy entrypoint
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-CMD ["/entrypoint.sh"]
-
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000","--http","h11"]

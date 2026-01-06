@@ -1,25 +1,25 @@
 services:
   crm_back:
     build: .
-    container_name: my_crm
+    container_name: my_crm_dev
     restart: always
     depends_on:
-      - crm_db
+      - crm_db_dev
     env_file:
-      - .env.prod
+      - .env.dev
     ports:
-      - "8001:8000"
+      - "8002:8000"
     volumes:
       - ./app:/app
-       - /home/ubuntu/uploads:/home/ubuntu/uploads  
+    
 
-  crm_db:
+  crm_db_dev:
     image: postgres:15
-    container_name: crm_postgres
+    container_name: crm_postgres_dev
     env_file:
-      - .env
+      - .env.dev
     ports:
-      - "5434:5432"
+      - "5433:5432"
     volumes:
       - crm_data:/var/lib/postgresql/data
 
