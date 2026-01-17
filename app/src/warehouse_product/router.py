@@ -5,6 +5,7 @@ from ..product.schema import ProductBase, ProductRead
 from typing import Optional
 from app.utils.custom_exceptions import ItemNotFound
 from app.src.warehouse_product.schema import WareProdRead, WareProdWrite
+from app.src.warehouse.dao import WarehouseDao, get_w_dao
 
 router = APIRouter(prefix="/warehouse_products", tags=["warehouse_product"])
 
@@ -18,8 +19,16 @@ async def get_by_id(id: int, dao: WarehouseProductDao = Depends(get_wp_dao)):
 
 
 @router.get("/get_all/{ware_id}", response_model=Optional[list[WareProdRead]])
-async def get_all(ware_id: int, dao: WarehouseProductDao = Depends(get_wp_dao)):
-    warehouse_prods = await dao.get_all_w_id(ware_id)
+async def get_all(
+    ware_id: int,
+    dao: WarehouseProductDao = Depends(get_wp_dao),
+    w_dao: WarehouseDao = Depends(get_w_dao),
+):
+    warehouse = await w_dao.get_one(id=ware_id)
+    if not warehouse:
+        raise ItemNotFound(item_id=ware_id, item="warehouse")
+
+    warehouse_prods = await dao.get_all_by_w_id(ware_id)
     return warehouse_prods
 
 

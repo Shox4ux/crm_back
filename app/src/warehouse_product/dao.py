@@ -21,7 +21,7 @@ class WarehouseProductDao:
         )
         return result.scalar_one_or_none()
 
-    async def get_all_w_id(self, ware_id: int) -> list[WareProdRead] | None:
+    async def get_all_by_w_id(self, ware_id: int) -> list[WareProdRead] | None:
         result = await self.db.execute(
             select(WarehouseProduct)
             .options(selectinload(WarehouseProduct.product))
