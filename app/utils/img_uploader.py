@@ -10,7 +10,11 @@ settings = Settings()
 
 UPLOAD_DIR = Path(f"{settings.ASSETS_FOLDER_PATH}/product_imgs")
 print("🚀 UPLOAD_DIR =", UPLOAD_DIR.resolve())
+
 print("🚀 settings.ASSETS_FOLDER_PATH =", settings.ASSETS_FOLDER_PATH)
+print("🚀 settings.ASYNC_DATABASE_URL =", settings.ASYNC_DATABASE_URL)
+print("🚀 settings.SYNC_DATABASE_URL =", settings.SYNC_DATABASE_URL)
+
 # inner folder path
 # UPLOAD_DIR = Path("app/uploads/product_imgs")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
