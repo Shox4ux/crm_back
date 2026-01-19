@@ -4,7 +4,7 @@ from datetime import datetime
 from app.src.warehouse_product.schema import WareProdRead
 
 
-class OrderProdBase(BaseModel):
+class OrderProBase(BaseModel):
     custom_quantity: int
     custom_price: float
 
@@ -12,16 +12,20 @@ class OrderProdBase(BaseModel):
         from_attributes = True
 
 
-class OrderProdWrite(OrderProdBase):
+class OrderProCreate(OrderProBase):
     warehouse_product_id: int
+
+
+class OrderProUpdate(OrderProCreate):
+    id: int
 
 
 class OrderBulkWrite(BaseModel):
     order_id: int
-    items: Optional[list[OrderProdWrite]]
+    items: Optional[list[OrderProCreate]]
 
 
-class OrderProdRead(OrderProdBase):
+class OrderProdRead(OrderProBase):
     id: int
     warehouse_product: Optional[WareProdRead]
     created_at: datetime

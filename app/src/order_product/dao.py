@@ -1,7 +1,7 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .schema import OrderProdRead, OrderBulkWrite, OrderProdBase
+from .schema import OrderProUpdate, OrderProdRead, OrderProCreate, OrderProBase
 from sqlalchemy import select
 from app.src.order_product.model import OrderProduct
 from app.src.warehouse_product.model import WarehouseProduct
@@ -33,16 +33,18 @@ class OrderProductDao:
         )
         return result.scalars().all()
 
-    async def create(self, data: OrderBulkWrite) -> Optional[list[OrderProdRead]]:
+    async def create(
+        self, order_id: int, data: list[OrderProCreate]
+    ) -> Optional[list[OrderProdRead]]:
 
         prods = [
             OrderProduct(
-                order_id=data.order_id,
+                order_id=order_id,
                 warehouse_product_id=item.warehouse_product_id,
                 custom_price=item.custom_price,
                 custom_quantity=item.custom_quantity,
             )
-            for item in data.items
+            for item in data
         ]
 
         self.db.add_all(prods)
@@ -61,8 +63,8 @@ class OrderProductDao:
         await self.db.commit()
         return True
 
-    async def update(self, id: int, data: OrderProdBase):
-        result = await self.db.get_one(OrderProduct, id)
+    async def update(self, data: OrderProUpdate):
+        result = await self.db.get_one(OrderProduct, data.id)
 
         if not result:
             raise ItemNotFound(item_id=id, item="order")

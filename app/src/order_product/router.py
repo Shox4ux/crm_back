@@ -7,7 +7,7 @@ from app.src.warehouse_product.schema import WareProdRead
 from app.src.product.dao import ProductDao, get_prod_dao
 from app.src.order_product.schema import (
     OrderProdRead,
-    OrderProdBase,
+    OrderProBase,
     OrderBulkWrite,
 )
 
@@ -34,7 +34,7 @@ async def create(
     dao: OrderProductDao = Depends(get_orp_dao),
     p_dao: ProductDao = Depends(get_prod_dao),
 ):
-    order_prod = await dao.create(data)
+    order_prod = await dao.create(data.order_id, data.items)
 
     if not order_prod:
         raise Exception()
@@ -55,9 +55,9 @@ async def create(
     return "Successfully created"
 
 
-@router.patch("/update/{id}", response_model=OrderProdBase)
+@router.patch("/update/{id}", response_model=OrderProBase)
 async def update(
-    id: int, data: OrderProdBase, dao: OrderProductDao = Depends(get_orp_dao)
+    id: int, data: OrderProBase, dao: OrderProductDao = Depends(get_orp_dao)
 ):
     order_prod = await dao.update(id, data)
     if not order_prod:

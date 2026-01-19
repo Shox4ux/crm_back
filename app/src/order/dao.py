@@ -1,7 +1,7 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .order_schema import OrderRead, OrderWrite, OrderUpdt
+from .schema import OrderRead, OrderCreate, OrderUpdate
 from sqlalchemy import select, update, delete
 from app.src.order.model import Order
 from sqlalchemy.orm import selectinload
@@ -45,8 +45,8 @@ class OrderDao:
 
         return result.scalars().all()
 
-    async def create(self, data: OrderWrite) -> Order:
-        new = Order(**data.model_dump())
+    async def create(self, data: OrderCreate) -> Order:
+        new = data.to_order()
         self.db.add(new)
         await self.db.commit()
         await self.db.refresh(new)
@@ -63,7 +63,7 @@ class OrderDao:
         await self.db.commit()
         return True
 
-    async def update_status(self, id: int, data: OrderUpdt):
+    async def update(self, id: int, data: OrderUpdate):
         result = await self.db.get_one(Order, id)
         if not result:
             raise ItemNotFound(item_id=id, item="order")
