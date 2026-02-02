@@ -14,6 +14,7 @@ class OrderProBase(BaseModel):
 
 class OrderProCreate(OrderProBase):
     warehouse_product_id: int
+    product_id: int
 
 
 class OrderProUpdate(OrderProCreate):

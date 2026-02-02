@@ -3,10 +3,11 @@ from logging.config import fileConfig
 
 from sqlalchemy import create_engine, pool
 from alembic import context
-
+from app.settings import Settings
 from app.models.common_col import Base
 
 config = context.config
+settings = Settings()
 
 # Logging
 if config.config_file_name is not None:
@@ -16,7 +17,8 @@ if config.config_file_name is not None:
 target_metadata = Base.metadata
 
 # ---- THIS IS THE IMPORTANT PART ----
-DATABASE_URL = os.environ["SYNC_DATABASE_URL"]
+DATABASE_URL = settings.SYNC_DATABASE_URL
+# os.environ["SYNC_DATABASE_URL"]
 
 
 def run_migrations_offline():

@@ -11,6 +11,7 @@ class Product(ComCharModel):
     base_price = Column(Float, nullable=False)
     sell_price = Column(Float, nullable=False)
     img_url = Column(String, nullable=True)
+    is_archived = Column(Integer, default=0)
     measure = Column(Integer, nullable=True)
     total_quantity = Column(Integer, nullable=False)
     active_quantity = Column(Integer, nullable=False)

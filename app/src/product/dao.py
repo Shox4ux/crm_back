@@ -1,6 +1,8 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.utils.enums import ProductStatus
 from .schema import ProductRead, ProductWrite, ProductBase
 from sqlalchemy import select
 from app.src.product.model import Product
@@ -26,6 +28,40 @@ class ProductDao:
             select(Product).options(selectinload(Product.base_expenses))
         )
         return result.scalars().all()
+
+    async def get_all_archived(self) -> list[ProductRead] | None:
+        result = await self.db.execute(
+            select(Product)
+            .options(selectinload(Product.base_expenses))
+            .where(Product.is_archived == ProductStatus.ARCHIVED.value)
+        )
+        return result.scalars().all()
+
+    async def get_all_active(self) -> list[ProductRead] | None:
+        result = await self.db.execute(
+            select(Product)
+            .options(selectinload(Product.base_expenses))
+            .where(Product.is_archived == ProductStatus.ACTIVE.value)
+        )
+        return result.scalars().all()
+
+    async def put_to_archive(self, id: int) -> bool:
+        result = await self.db.get(Product, id)
+        if not result:
+            raise ItemNotFound(item_id=id, item="product")
+        result.is_archived = ProductStatus.ARCHIVED.value
+        await self.db.commit()
+        await self.db.refresh(result)
+        return True
+
+    async def delete_from_archive(self, id: int) -> bool:
+        result = await self.db.get(Product, id)
+        if not result:
+            raise ItemNotFound(item_id=id, item="product")
+        result.is_archived = ProductStatus.ACTIVE.value
+        await self.db.commit()
+        await self.db.refresh(result)
+        return True
 
     async def create(self, data: ProductWrite) -> Product:
         new_product = Product(**data.model_dump())

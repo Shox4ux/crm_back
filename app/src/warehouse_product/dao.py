@@ -31,7 +31,9 @@ class WarehouseProductDao:
 
     async def get_all(self) -> list[WareProdRead] | None:
         result = await self.db.execute(
-            select(WarehouseProduct).options(selectinload(WarehouseProduct.product))
+            select(WarehouseProduct).options(
+                selectinload(WarehouseProduct.product, WarehouseProduct.warehouse)
+            )
         )
         return result.scalars().all()
 

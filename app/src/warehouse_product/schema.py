@@ -3,7 +3,8 @@ from pydantic import BaseModel
 from datetime import datetime
 
 
-from app.src.product.schema import ProductRead, ProductReadWP
+from app.src.product.schema import ProductReadWP
+from app.src.warehouse.schema import WarehouseReadWP
 
 
 class WareProdBase(BaseModel):
@@ -33,6 +34,7 @@ class WareProdUpdate(BaseModel):
 class WareProdRead(WareProdBase):
     product: Optional[ProductReadWP]
     warehouse_id: int
+    warehouse: Optional[WarehouseReadWP]
     status: int
     arrives_at: Optional[datetime]
     quantity: int

@@ -10,4 +10,6 @@ class OrderProduct(ComCharModel):
     custom_price = Column(Float, nullable=False)
     warehouse_product_id = Column(Integer, ForeignKey(f"{tbnames.WAREHOUSE_PRO}.id"))
     warehouse_product = relationship("WarehouseProduct", uselist=False)
+    product_id = Column(Integer, ForeignKey(f"{tbnames.PRODUCT}.id"))
+    product = relationship("Product", uselist=False)
     custom_quantity = Column(Integer, nullable=False)

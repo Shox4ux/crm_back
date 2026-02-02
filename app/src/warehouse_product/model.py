@@ -10,6 +10,7 @@ class WarehouseProduct(ComCharModel):
     warehouse_id = Column(
         Integer, ForeignKey(f"{tbnames.WAREHOUSE}.id", ondelete="CASCADE")
     )
+    warehouse = relationship("Warehouse", uselist=False, lazy="selectin")
     product_id = Column(
         Integer, ForeignKey(f"{tbnames.PRODUCT}.id", ondelete="CASCADE")
     )

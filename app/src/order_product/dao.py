@@ -23,6 +23,14 @@ class OrderProductDao:
         )
         return result.scalar_one_or_none()
 
+    async def get_by_pro_id(self, product_id: int) -> OrderProdRead | None:
+        result = await self.db.execute(
+            select(OrderProduct)
+            .options(selectinload(OrderProduct.warehouse_product))
+            .where(OrderProduct.product_id == product_id)
+        )
+        return result.scalar_one_or_none()
+
     async def get_all(self) -> list[OrderProdRead] | None:
         result = await self.db.execute(
             select(OrderProduct).options(

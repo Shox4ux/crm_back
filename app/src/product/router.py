@@ -12,6 +12,8 @@ from app.utils.img_uploader import img_uploader, delete_image
 from app.src.client.dao import ClientDao, get_c_dao
 from app.src.client.schema import ClientProdWrite
 
+from app.src.order_product.dao import OrderProductDao, get_orp_dao
+
 router = APIRouter(prefix="/products", tags=["product"])
 
 
@@ -26,6 +28,18 @@ async def get_by_id(id: int, dao: ProductDao = Depends(get_prod_dao)):
 @router.get("/get_all", response_model=Optional[list[ProductRead]])
 async def get_all(dao: ProductDao = Depends(get_prod_dao)):
     products = await dao.get_all()
+    return products
+
+
+@router.get("/get_all_archived", response_model=Optional[list[ProductRead]])
+async def get_all_archived(dao: ProductDao = Depends(get_prod_dao)):
+    products = await dao.get_all_archived()
+    return products
+
+
+@router.get("/get_all_active", response_model=Optional[list[ProductRead]])
+async def get_all_active(dao: ProductDao = Depends(get_prod_dao)):
+    products = await dao.get_all_active()
     return products
 
 
@@ -101,11 +115,22 @@ async def update(
 
 
 @router.delete("/delete/{id}", status_code=status.HTTP_200_OK)
-async def delete(id: int, dao: ProductDao = Depends(get_prod_dao)):
+async def delete(
+    id: int,
+    dao: ProductDao = Depends(get_prod_dao),
+    orp_dao: OrderProductDao = Depends(get_orp_dao),
+):
     prod = await dao.get_one(id)
 
     if not prod:
         raise ItemNotFound(item_id=id, item="product")
+
+    orp = await orp_dao.get_by_pro_id(product_id=id)
+    if orp:
+        return {
+            "message": "Cannot delete product with existing order products,"
+            "\n it will be archived instead."
+        }
 
     delete_image(image_path=prod.img_url)
     result = await dao.delete(id)
