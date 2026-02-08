@@ -11,6 +11,8 @@ from .src.order_product.router import router as order_product_router
 from .src.warehouse_product.router import router as warehouse_product_router
 from .src.product_expense.router import router as product_expense_router
 from .src.auth.router import router as auth_router
+from .src.payment.router import router as payment_router
+
 from app.settings import Settings
 from app.utils.custom_exceptions import global_exception_handler
 
@@ -55,3 +57,10 @@ app.include_router(warehouse_router)
 app.include_router(warehouse_product_router)
 app.include_router(order_router)
 app.include_router(order_product_router)
+app.include_router(payment_router)
+
+
+# if __name__ == "__main__":
+#     import uvicorn
+
+#     uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)

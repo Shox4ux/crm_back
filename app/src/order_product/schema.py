@@ -26,7 +26,7 @@ class OrderBulkWrite(BaseModel):
     items: Optional[list[OrderProCreate]]
 
 
-class OrderProdRead(OrderProBase):
+class OrderProdResponse(OrderProBase):
     id: int
     warehouse_product: Optional[WareProdRead]
     created_at: datetime

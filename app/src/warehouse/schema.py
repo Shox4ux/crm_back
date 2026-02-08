@@ -1,7 +1,8 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
-from app.src.warehouse_product.schema import WareProdRead
+
+from app.schemas.common_schemas import GlobalWarePro
 
 
 class WarehouseBase(BaseModel):
@@ -11,7 +12,7 @@ class WarehouseBase(BaseModel):
 
 class WarehouseRead(WarehouseBase):
     id: int
-    products: Optional[list[WareProdRead]]
+    products: Optional[list[GlobalWarePro]]
     created_at: datetime
 
     class Config:
@@ -20,9 +21,8 @@ class WarehouseRead(WarehouseBase):
 
 class WarehouseReadWP(WarehouseBase):
     id: int
-
-    class Config:
-        from_attributes = True
+    created_at: datetime
+    pass
 
 
 class WarehouseWrite(WarehouseBase):

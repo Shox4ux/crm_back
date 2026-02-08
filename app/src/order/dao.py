@@ -1,7 +1,7 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .schema import OrderRead, OrderCreate, OrderUpdate
+from .schema import OrderResponse, OrderCreate, OrderUpdate
 from sqlalchemy import select, update, delete
 from app.src.order.model import Order
 from sqlalchemy.orm import selectinload
@@ -16,7 +16,7 @@ class OrderDao:
     def __init__(self, db: AsyncSession):
         self.db: AsyncSession = db
 
-    async def get_one(self, id: int) -> OrderRead | None:
+    async def get_one(self, id: int) -> OrderResponse | None:
         result = await self.db.execute(
             select(Order)
             .options(
@@ -32,7 +32,7 @@ class OrderDao:
 
         return result.scalar_one_or_none()
 
-    async def get_all(self) -> list[OrderRead] | None:
+    async def get_all(self) -> list[OrderResponse] | None:
         result = await self.db.execute(
             select(Order).options(
                 selectinload(Order.client).selectinload(Client.user),

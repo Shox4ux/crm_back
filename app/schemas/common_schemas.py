@@ -1,9 +1,9 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
-from app.src.product.schema import ProductRead
 from app.src.user.schema import UserResponse
-from app.src.order_product.schema import OrderProdRead
+from app.src.order_product.schema import OrderProdResponse
+from app.src.product.schema import ProductReadWP
 
 
 class ClientPrRead(BaseModel):
@@ -27,7 +27,7 @@ class OrderBase(BaseModel):
 
 class OrderForClient(OrderBase):
     id: int
-    order_products: Optional[list[OrderProdRead]]
+    order_products: Optional[list[OrderProdResponse]]
 
     class Config:
         from_attributes = True
@@ -38,6 +38,17 @@ class ClientForOrder(BaseModel):
     user: UserResponse
     products: Optional[list[ClientPrRead]]
     created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class GlobalWarePro(BaseModel):
+    product: Optional[ProductReadWP]
+    warehouse_id: int
+    status: int
+    arrives_at: Optional[datetime]
+    quantity: int
 
     class Config:
         from_attributes = True

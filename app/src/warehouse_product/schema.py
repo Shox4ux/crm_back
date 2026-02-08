@@ -2,9 +2,7 @@ from typing import Optional
 from pydantic import BaseModel
 from datetime import datetime
 
-
 from app.src.product.schema import ProductReadWP
-from app.src.warehouse.schema import WarehouseReadWP
 
 
 class WareProdBase(BaseModel):
@@ -31,10 +29,20 @@ class WareProdUpdate(BaseModel):
     quantity: int
 
 
+class GlobalWarehouse(BaseModel):
+    id: int
+    address: str
+    name: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
 class WareProdRead(WareProdBase):
     product: Optional[ProductReadWP]
     warehouse_id: int
-    warehouse: Optional[WarehouseReadWP]
+    warehouse: Optional[GlobalWarehouse]
     status: int
     arrives_at: Optional[datetime]
     quantity: int

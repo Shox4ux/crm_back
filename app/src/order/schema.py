@@ -2,7 +2,11 @@ from typing import Optional
 from pydantic import BaseModel
 from datetime import datetime
 from app.src.order.model import Order
-from app.src.order_product.schema import OrderProCreate, OrderProUpdate, OrderProdRead
+from app.src.order_product.schema import (
+    OrderProCreate,
+    OrderProUpdate,
+    OrderProdResponse,
+)
 from app.schemas.common_schemas import OrderBase, ClientForOrder
 
 
@@ -37,9 +41,9 @@ class OrderUpdate(BaseModel):
         orm_mode = True
 
 
-class OrderRead(OrderBase):
+class OrderResponse(OrderBase):
     id: int
-    order_products: Optional[list[OrderProdRead]]
+    order_products: Optional[list[OrderProdResponse]]
     client: Optional[ClientForOrder]
     created_at: datetime
 

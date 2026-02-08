@@ -8,7 +8,7 @@ from app.settings import Settings
 settings = Settings()
 
 
-UPLOAD_DIR = Path(f"{settings.ASSETS_FOLDER_PATH}/product_imgs")
+UPLOAD_DIR = Path(f"{settings.ASSETS_FOLDER_PATH}")
 print("🚀 UPLOAD_DIR =", UPLOAD_DIR.resolve())
 
 print("🚀 settings.ASSETS_FOLDER_PATH =", settings.ASSETS_FOLDER_PATH)

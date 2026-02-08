@@ -6,7 +6,7 @@ from app.src.product.schema import ProductBase, ProductRead
 from app.src.warehouse_product.schema import WareProdRead
 from app.src.product.dao import ProductDao, get_prod_dao
 from app.src.order_product.schema import (
-    OrderProdRead,
+    OrderProdResponse,
     OrderProBase,
     OrderBulkWrite,
 )
@@ -14,7 +14,7 @@ from app.src.order_product.schema import (
 router = APIRouter(prefix="/order_products", tags=["order_product"])
 
 
-@router.get("/get_by_id/{id}", response_model=Optional[OrderProdRead])
+@router.get("/get_by_id/{id}", response_model=Optional[OrderProdResponse])
 async def get_by_id(id: int, dao: OrderProductDao = Depends(get_orp_dao)):
     order_prod = await dao.get_one(id)
     if not order_prod:
@@ -22,7 +22,7 @@ async def get_by_id(id: int, dao: OrderProductDao = Depends(get_orp_dao)):
     return order_prod
 
 
-@router.get("/get_all", response_model=Optional[list[OrderProdRead]])
+@router.get("/get_all", response_model=Optional[list[OrderProdResponse]])
 async def get_all(dao: OrderProductDao = Depends(get_orp_dao)):
     order_prods = await dao.get_all()
     return order_prods

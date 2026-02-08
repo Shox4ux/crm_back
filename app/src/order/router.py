@@ -3,19 +3,19 @@ from fastapi import APIRouter, status, Depends
 from app.utils.custom_exceptions import ItemNotFound
 from .dao import OrderDao, get_or_dao
 from typing import Optional
-from app.src.order.schema import OrderRead, OrderBase, OrderCreate, OrderUpdate
+from app.src.order.schema import OrderResponse, OrderBase, OrderCreate, OrderUpdate
 from app.src.order_product.dao import OrderProductDao, get_orp_dao
 
 router = APIRouter(prefix="/orders", tags=["order"])
 
 
-@router.get("/get_by_id/{id}", response_model=Optional[OrderRead])
+@router.get("/get_by_id/{id}", response_model=Optional[OrderResponse])
 async def get_by_id(id: int, dao: OrderDao = Depends(get_or_dao)):
     order_prod = await dao.get_one(id)
     return order_prod
 
 
-@router.get("/get_all", response_model=Optional[list[OrderRead]])
+@router.get("/get_all", response_model=Optional[list[OrderResponse]])
 async def get_all(dao: OrderDao = Depends(get_or_dao)):
     orders = await dao.get_all()
     return orders

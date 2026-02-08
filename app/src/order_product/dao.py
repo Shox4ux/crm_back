@@ -1,7 +1,7 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .schema import OrderProUpdate, OrderProdRead, OrderProCreate, OrderProBase
+from .schema import OrderProUpdate, OrderProdResponse, OrderProCreate, OrderProBase
 from sqlalchemy import select
 from app.src.order_product.model import OrderProduct
 from app.src.warehouse_product.model import WarehouseProduct
@@ -15,7 +15,7 @@ class OrderProductDao:
     def __init__(self, db: AsyncSession):
         self.db: AsyncSession = db
 
-    async def get_one(self, id: int) -> OrderProdRead | None:
+    async def get_one(self, id: int) -> OrderProdResponse | None:
         result = await self.db.execute(
             select(OrderProduct)
             .options(selectinload(OrderProduct.warehouse_product))
@@ -23,7 +23,7 @@ class OrderProductDao:
         )
         return result.scalar_one_or_none()
 
-    async def get_by_pro_id(self, product_id: int) -> OrderProdRead | None:
+    async def get_by_pro_id(self, product_id: int) -> OrderProdResponse | None:
         result = await self.db.execute(
             select(OrderProduct)
             .options(selectinload(OrderProduct.warehouse_product))
@@ -31,7 +31,7 @@ class OrderProductDao:
         )
         return result.scalar_one_or_none()
 
-    async def get_all(self) -> list[OrderProdRead] | None:
+    async def get_all(self) -> list[OrderProdResponse] | None:
         result = await self.db.execute(
             select(OrderProduct).options(
                 selectinload(OrderProduct.warehouse_product).selectinload(
@@ -43,7 +43,7 @@ class OrderProductDao:
 
     async def create(
         self, order_id: int, data: list[OrderProCreate]
-    ) -> Optional[list[OrderProdRead]]:
+    ) -> Optional[list[OrderProdResponse]]:
 
         prods = [
             OrderProduct(
