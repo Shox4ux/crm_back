@@ -1,9 +1,8 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.utils.enums import ProductStatus
-from .schema import ProductRead, ProductWrite, ProductBase
+from .schema import ProductBase, ProductRead, ProductCreate
 from sqlalchemy import select
 from app.src.product.model import Product
 from sqlalchemy.orm import selectinload
@@ -63,8 +62,8 @@ class ProductDao:
         await self.db.refresh(result)
         return True
 
-    async def create(self, data: ProductWrite) -> Product:
-        new_product = Product(**data.model_dump())
+    async def create(self, data: ProductCreate) -> Product:
+        new_product = data
         self.db.add(new_product)
         await self.db.commit()
         await self.db.refresh(new_product)
@@ -73,8 +72,7 @@ class ProductDao:
     async def update(self, id: int, data: ProductBase) -> Product:
         result = await self.db.get_one(Product, id)
         if not result:
-            raise ItemNotFound(item_id=id, item="order")
-
+            raise ItemNotFound(item_id=id, item="product")
         for field, value in data.model_dump(exclude_none=True).items():
             setattr(result, field, value)
 

@@ -4,7 +4,8 @@ from typing import Optional
 from app.utils.custom_exceptions import ItemNotFound
 from app.src.product.schema import (
     ProductRead,
-    ProductWrite,
+    ProductCreate,
+    ProductUpdate,
     ProductSimpleRead,
     ProductBase,
 )
@@ -45,35 +46,18 @@ async def get_all_active(dao: ProductDao = Depends(get_prod_dao)):
 
 @router.post("/create", response_model=ProductSimpleRead)
 async def create(
-    img: UploadFile | None = File(None),
-    name: str = Form(...),
-    base_price: float = Form(...),
-    sell_price: float = Form(...),
-    total_quantity: int = Form(...),
+    data: ProductCreate = Depends(),
     dao: ProductDao = Depends(get_prod_dao),
     c_dao: ClientDao = Depends(get_c_dao),
 ):
-
     img_path = None
-    if img:
-        img_path = img_uploader(img)
+    if data.img:
+        img_path = img_uploader(data.img)
         if not img_path:
             raise Exception()
-
-    data = ProductWrite(
-        img_url=img_path,
-        name=name,
-        base_price=base_price,
-        total_quantity=total_quantity,
-        active_quantity=total_quantity,
-        sell_price=sell_price,
-    )
-
-    product = await dao.create(data)
-
+    product = await dao.create(data.to_prod(img_path=img_path))
     if not product:
         raise Exception()
-
     await _create_cp_for_each_c(product, c_dao)
 
     return product
@@ -82,31 +66,16 @@ async def create(
 @router.patch("/update/{id}", status_code=status.HTTP_200_OK)
 async def update(
     id: int,
-    img: UploadFile | None = File(None),
-    name: Optional[str] = Form(None),
-    base_price: Optional[float] = Form(None),
-    sell_price: Optional[float] = Form(None),
-    total_quantity: Optional[int] = Form(None),
+    data: ProductUpdate = Depends(),
     dao: ProductDao = Depends(get_prod_dao),
 ):
     prod = await dao.get_one(id)
-
     img_path = prod.img_url
-
-    if img is not None:
+    if data.img:
         delete_image(image_path=prod.img_url)
-        img_path = img_uploader(img)
+        img_path = img_uploader(data.img)
 
-    data: ProductBase = ProductBase(
-        name=name,
-        base_price=base_price,
-        img_url=img_path,
-        sell_price=sell_price,
-        active_quantity=total_quantity,
-        total_quantity=total_quantity,
-    )
-
-    p_updated = await dao.update(id=id, data=data)
+    p_updated = await dao.update(id=id, data=data.to_update(img_path=img_path))
 
     if not p_updated:
         raise Exception()
