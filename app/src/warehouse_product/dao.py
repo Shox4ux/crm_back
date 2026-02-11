@@ -2,7 +2,7 @@ from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from .schema import WareProdRead, WareProdWrite
-from sqlalchemy import select
+from sqlalchemy import select, update
 from app.src.warehouse_product.model import WarehouseProduct
 from sqlalchemy.orm import selectinload
 from app.utils.custom_exceptions import ItemNotFound
@@ -50,6 +50,27 @@ class WarehouseProductDao:
         await self.db.commit()
         await self.db.refresh(new)
         return new
+
+    async def update(self, data: WareProdWrite, id: int) -> bool:
+        stmt = (
+            update(WarehouseProduct)
+            .where(WarehouseProduct.id == id)
+            .values(**data.model_dump(exclude_unset=True))
+            .returning(WarehouseProduct)
+        )
+        up_wp = await self.db.execute(stmt)
+        if not up_wp:
+            raise ItemNotFound(item="payment", item_id=id)
+        await self.db.commit()
+        return True
+        # result = await self.db.get_one(WarehouseProduct, id)
+        # if not result:
+        #     raise ItemNotFound(item_id=id, item="warehouse product")
+        # for field, value in data.model_dump(exclude_unset=True).items():
+        #     setattr(result, field, value)
+        # await self.db.commit()
+        # await self.db.refresh(result)
+        # return result
 
     async def delete(self, id: int) -> bool:
         result = await self.db.execute(

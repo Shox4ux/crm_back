@@ -63,6 +63,18 @@ async def create(
     return "Successfully created"
 
 
+@router.patch("/update/{id}")
+async def update(
+    id: int,
+    data: WareProdWrite,
+    dao: WarehouseProductDao = Depends(get_wp_dao),
+):
+    wp_updated = await dao.update(data=data, id=id)
+    if not wp_updated:
+        raise Exception()
+    return "Successfully updated"
+
+
 @router.delete("/delete/{id}", status_code=status.HTTP_200_OK)
 async def delete(
     id: int,

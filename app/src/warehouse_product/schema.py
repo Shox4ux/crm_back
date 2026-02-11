@@ -23,12 +23,6 @@ class WareProdWrite(BaseModel):
         from_attributes = True
 
 
-class WareProdUpdate(BaseModel):
-    id: int
-    status: int
-    quantity: int
-
-
 class GlobalWarehouse(BaseModel):
     id: int
     address: str
