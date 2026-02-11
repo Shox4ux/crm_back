@@ -49,3 +49,13 @@ class WareProdRead(WareProdBase):
 
     class Config:
         from_attributes = True
+
+
+class InnerWareProdRead(WareProdBase):
+    product: Optional[ProductReadWP]
+    status: int
+    arrives_at: Optional[datetime]
+    quantity: int
+
+    class Config:
+        from_attributes = True

@@ -1,7 +1,7 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .schema import WareProdRead, WareProdWrite
+from .schema import WareProdRead, WareProdWrite, InnerWareProdRead
 from sqlalchemy import select
 from app.src.warehouse_product.model import WarehouseProduct
 from sqlalchemy.orm import selectinload
@@ -13,7 +13,7 @@ class WarehouseProductDao:
     def __init__(self, db: AsyncSession):
         self.db: AsyncSession = db
 
-    async def get_one(self, id: int) -> WareProdRead | None:
+    async def get_one(self, id: int) -> InnerWareProdRead | None:
         result = await self.db.execute(
             select(WarehouseProduct)
             .options(selectinload(WarehouseProduct.product))
