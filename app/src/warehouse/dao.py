@@ -2,10 +2,11 @@ from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from .schema import WarehouseRead, WarehouseWrite
-from sqlalchemy import select, update, delete
+from sqlalchemy import select
 from app.src.warehouse.model import Warehouse
-from sqlalchemy.orm import selectinload, joinedload
+from sqlalchemy.orm import selectinload
 from app.utils.custom_exceptions import ItemNotFound
+from app.src.warehouse_product.model import WarehouseProduct
 
 
 class WarehouseDao:
@@ -23,7 +24,9 @@ class WarehouseDao:
 
     async def get_all(self) -> list[WarehouseRead] | None:
         result = await self.db.execute(
-            select(Warehouse).options(joinedload(Warehouse.products))
+            select(Warehouse).options(
+                selectinload(Warehouse.products).selectinload(WarehouseProduct.product)
+            )
         )
         return result.unique().scalars().all()
 

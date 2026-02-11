@@ -13,20 +13,20 @@ async def get_all_payments(dao: PaymentDao = Depends(get_pay_dao)):
     return payments
 
 
-@router.post("/create")
-async def create_payment(data: PaymentCreate, dao: PaymentDao = Depends(get_pay_dao)):
-    new_payment = await dao.create(data)
-    if not new_payment:
-        raise Exception("Payment creation failed")
-    return "Payment created successfully"
-
-
 @router.get("/get_by_id/{id}", response_model=PaymentResponse)
 async def get_payment_by_id(id: int, dao: PaymentDao = Depends(get_pay_dao)):
     payment = await dao.get_by_id(id)
     if not payment:
         raise ItemNotFound(item="payment", item_id=id)
     return payment
+
+
+@router.post("/create")
+async def create_payment(data: PaymentCreate, dao: PaymentDao = Depends(get_pay_dao)):
+    new_payment = await dao.create(data)
+    if not new_payment:
+        raise Exception("Payment creation failed")
+    return "Payment created successfully"
 
 
 @router.patch("/update/{id}", response_model=str)
@@ -36,6 +36,7 @@ async def update_payment(
     updated_payment = await dao.update(id, data)
     if not updated_payment:
         raise ItemNotFound(item="payment", item_id=id)
+
     return "Payment updated successfully"
 
 

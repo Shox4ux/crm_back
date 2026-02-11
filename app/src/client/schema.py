@@ -10,6 +10,15 @@ from .model import Client
 from app.src.auth.method import get_pass_hashed
 
 
+class ClientBase(BaseModel):
+    id: int
+    user: UserResponse
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
 class ClientProdRead(BaseModel):
     id: int
     custom_price: float
@@ -56,12 +65,9 @@ class ClientCreate:
         return Client(user_id=user_id)
 
 
-class ClientResponse(BaseModel):
-    id: int
-    user: UserResponse
+class ClientResponse(ClientBase):
     products: Optional[list[ClientProdRead]]
     orders: Optional[list[OrderForClient]]
-    created_at: datetime
 
     class Config:
         from_attributes = True

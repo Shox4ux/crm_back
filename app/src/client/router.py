@@ -10,6 +10,14 @@ from app.utils.img_uploader import img_uploader, delete_image
 router = APIRouter(prefix="/clients", tags=["client"])
 
 
+@router.get("/get_by_id/{id}", response_model=Optional[ClientResponse])
+async def get_by_id(id: int, dao: ClientDao = Depends(get_c_dao)):
+    client = await dao.get_by_id(id)
+    if not client:
+        raise Exception()
+    return client
+
+
 @router.get("/get_all", response_model=Optional[list[ClientResponse]])
 async def get_all(dao: ClientDao = Depends(get_c_dao)):
     clients = await dao.get_all()

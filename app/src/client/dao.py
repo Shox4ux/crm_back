@@ -28,8 +28,12 @@ class ClientDao:
                 selectinload(Client.orders)
                 .selectinload(Order.order_products)
                 .selectinload(OrderProduct.warehouse_product)
-                .selectinload(WarehouseProduct.product)
-                .selectinload(Product.base_expenses),
+                .options(
+                    selectinload(WarehouseProduct.product).selectinload(
+                        Product.base_expenses
+                    ),
+                    selectinload(WarehouseProduct.warehouse),
+                ),
             )
             .where(Client.id == id)
             .limit(1)
@@ -50,8 +54,12 @@ class ClientDao:
                 selectinload(Client.orders)
                 .selectinload(Order.order_products)
                 .selectinload(OrderProduct.warehouse_product)
-                .selectinload(WarehouseProduct.product)
-                .selectinload(Product.base_expenses),
+                .options(
+                    selectinload(WarehouseProduct.product).selectinload(
+                        Product.base_expenses
+                    ),
+                    selectinload(WarehouseProduct.warehouse),
+                ),
             )
         )
         return result.scalars().all()
