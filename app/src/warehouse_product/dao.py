@@ -1,7 +1,7 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .schema import WareProdRead, WareProdWrite, InnerWareProdRead
+from .schema import WareProdRead, WareProdWrite
 from sqlalchemy import select
 from app.src.warehouse_product.model import WarehouseProduct
 from sqlalchemy.orm import selectinload
@@ -13,10 +13,13 @@ class WarehouseProductDao:
     def __init__(self, db: AsyncSession):
         self.db: AsyncSession = db
 
-    async def get_one(self, id: int) -> InnerWareProdRead | None:
+    async def get_one(self, id: int) -> WareProdRead | None:
         result = await self.db.execute(
             select(WarehouseProduct)
-            .options(selectinload(WarehouseProduct.product))
+            .options(
+                selectinload(WarehouseProduct.product),
+                selectinload(WarehouseProduct.warehouse),
+            )
             .where(WarehouseProduct.id == id)
         )
         return result.scalar_one_or_none()
@@ -24,7 +27,10 @@ class WarehouseProductDao:
     async def get_all_by_w_id(self, ware_id: int) -> list[WareProdRead] | None:
         result = await self.db.execute(
             select(WarehouseProduct)
-            .options(selectinload(WarehouseProduct.product))
+            .options(
+                selectinload(WarehouseProduct.product),
+                selectinload(WarehouseProduct.warehouse),
+            )
             .where(WarehouseProduct.warehouse_id == ware_id)
         )
         return result.scalars().all()
@@ -41,7 +47,6 @@ class WarehouseProductDao:
     async def create(self, data: WareProdWrite) -> WarehouseProduct:
         new = WarehouseProduct(**data.model_dump())
         self.db.add(new)
-
         await self.db.commit()
         await self.db.refresh(new)
         return new

@@ -41,18 +41,7 @@ class GlobalWarehouse(BaseModel):
 
 class WareProdRead(WareProdBase):
     product: Optional[ProductReadWP]
-    warehouse_id: int
     warehouse: Optional[GlobalWarehouse]
-    status: int
-    arrives_at: Optional[datetime]
-    quantity: int
-
-    class Config:
-        from_attributes = True
-
-
-class InnerWareProdRead(WareProdBase):
-    product: Optional[ProductReadWP]
     status: int
     arrives_at: Optional[datetime]
     quantity: int
