@@ -44,6 +44,7 @@ class ClientForOrder(BaseModel):
 
 
 class GlobalWarePro(BaseModel):
+    id: int
     product: Optional[ProductReadWP]
     warehouse_id: int
     status: int

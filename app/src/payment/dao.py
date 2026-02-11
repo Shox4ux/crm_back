@@ -33,6 +33,7 @@ class PaymentDao:
         stmt = insert(Payment).values(**data.model_dump()).returning(Payment)
         result = await self.db.execute(stmt)
         await self.db.commit()
+
         return result.scalar_one()
 
     async def update(self, id: int, data: PaymentUpdate) -> bool:

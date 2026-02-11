@@ -24,8 +24,7 @@ async def get_payment_by_id(id: int, dao: PaymentDao = Depends(get_pay_dao)):
 @router.post("/create")
 async def create_payment(data: PaymentCreate, dao: PaymentDao = Depends(get_pay_dao)):
     new_payment = await dao.create(data)
-    if not new_payment:
-        raise Exception("Payment creation failed")
+
     return "Payment created successfully"
 
 
