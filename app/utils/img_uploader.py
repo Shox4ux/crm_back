@@ -45,7 +45,7 @@ def img_uploader(img: UploadFile) -> str | None:
         print("✅ SAVED EXISTS:", file_path.exists(), "AT:", file_path.resolve())
 
         # Return public path for URL
-        image_path = f"/uploads/product_imgs/{unique_name}"
+        image_path = f"/uploads/{unique_name}"
 
         return image_path
     else:
@@ -56,7 +56,7 @@ def delete_image(image_path: str):
     if not image_path:
         return
 
-    # image_path looks like: /uploads/product_imgs/xxxxx.png
+    # image_path looks like: /uploads/xxxxx.png
     try:
         filename = Path(image_path).name
         file_path = UPLOAD_DIR / filename
