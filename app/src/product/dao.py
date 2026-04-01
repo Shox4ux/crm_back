@@ -3,7 +3,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.utils.enums import ProductStatus
 from .schema import ProductBase, ProductRead, ProductCreate
-from sqlalchemy import select
+from sqlalchemy import select, update
 from app.src.product.model import Product
 from sqlalchemy.orm import selectinload
 from app.utils.custom_exceptions import ItemNotFound
@@ -73,9 +73,9 @@ class ProductDao:
         result = await self.db.get_one(Product, id)
         if not result:
             raise ItemNotFound(item_id=id, item="product")
-        for field, value in data.model_dump(exclude_none=True).items():
-            setattr(result, field, value)
-
+        await self.db.execute(
+            update(Product).where(Product.id == id).values(**data.model_dump())
+        )
         await self.db.commit()
         await self.db.refresh(result)
         return result
