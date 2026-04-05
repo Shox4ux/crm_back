@@ -48,6 +48,8 @@ class OrderResponse(OrderBase):
     id: int
     order_products: Optional[list[OrderProdResponse]]
     client: Optional[ClientForOrder]
+    paid_amount: Optional[float] = None
+    total_amount: Optional[float] = None
     created_at: datetime
 
     class Config:
