@@ -14,6 +14,7 @@ class OrderCreate(BaseModel):
     client_id: int
     status: int
     paid_amount: float
+    total_amount: float
     order_products: Optional[list[OrderProCreate]]
     admin_note: Optional[str]
     client_note: Optional[str]
@@ -25,6 +26,7 @@ class OrderCreate(BaseModel):
             paid_amount=self.paid_amount,
             admin_note=self.admin_note,
             client_note=self.client_note,
+            total_amount=self.total_amount,
         )
 
 
@@ -36,6 +38,7 @@ class OrderUpdate(BaseModel):
     deleted_order_products: Optional[list[int]]
     admin_note: Optional[str] = None
     client_note: Optional[str] = None
+    total_amount: Optional[float] = None
 
     class Config:
         orm_mode = True

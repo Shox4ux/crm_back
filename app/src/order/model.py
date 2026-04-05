@@ -17,5 +17,6 @@ class Order(ComCharModel):
     )
     status = Column(Integer, nullable=False)
     paid_amount = Column(Float, nullable=False)
+    total_amount = Column(Float, nullable=False)
     client_note = Column(String(425), nullable=True)
     admin_note = Column(String(425), nullable=True)
