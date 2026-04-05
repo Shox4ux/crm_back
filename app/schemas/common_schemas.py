@@ -17,6 +17,7 @@ class OrderBase(BaseModel):
     id: int
     status: int
     paid_amount: float
+    total_amount: float
     admin_note: str
     client_note: str
     created_at: datetime
