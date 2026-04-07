@@ -25,8 +25,7 @@ class Order(ComCharModel):
         passive_deletes=True,
     )
     status = Column(Integer, nullable=False)
-    is_prepaid = Column(Boolean, nullable=False)
-    delivery_deadline = Column(DateTime, default=func.now())
+    delivery_on = Column(DateTime, default=func.now())
     paid_amount = Column(Float, nullable=False)
     total_amount = Column(Float, nullable=False)
     client_note = Column(String(425), nullable=True)

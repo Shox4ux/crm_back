@@ -38,8 +38,8 @@ class OrderDao:
                 selectinload(Order.client).selectinload(Client.user),
                 selectinload(Order.client).selectinload(Client.products),
                 selectinload(Order.order_products)
-                #
-                .selectinload(OrderProduct.warehouse_product).options(
+                .selectinload(OrderProduct.warehouse_product)
+                .options(
                     selectinload(WarehouseProduct.warehouse),
                     selectinload(WarehouseProduct.product),
                 ),
