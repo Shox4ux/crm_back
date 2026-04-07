@@ -15,6 +15,7 @@ class OrderCreate(BaseModel):
     status: int
     paid_amount: float
     total_amount: float
+    delivery_on: datetime
     order_products: Optional[list[OrderProCreate]]
     admin_note: Optional[str]
     client_note: Optional[str]
@@ -33,12 +34,13 @@ class OrderCreate(BaseModel):
 class OrderUpdate(BaseModel):
     status: Optional[int] = None
     paid_amount: Optional[float] = None
+    delivery_on: datetime
+    total_amount: Optional[float] = None
     new_order_products: Optional[list[OrderProCreate]]
     updated_order_products: Optional[list[OrderProUpdate]]
     deleted_order_products: Optional[list[int]]
     admin_note: Optional[str] = None
     client_note: Optional[str] = None
-    total_amount: Optional[float] = None
 
     class Config:
         orm_mode = True
@@ -46,10 +48,11 @@ class OrderUpdate(BaseModel):
 
 class OrderResponse(OrderBase):
     id: int
-    order_products: Optional[list[OrderProdResponse]]
-    client: Optional[ClientForOrder]
     paid_amount: Optional[float] = None
     total_amount: Optional[float] = None
+    delivery_on: datetime
+    order_products: Optional[list[OrderProdResponse]]
+    client: Optional[ClientForOrder]
     created_at: datetime
 
     class Config:
