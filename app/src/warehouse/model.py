@@ -14,4 +14,5 @@ class Warehouse(ComCharModel):
         uselist=True,
         cascade="all, delete-orphan",
         passive_deletes=True,
+        back_populates="warehouse",
     )
