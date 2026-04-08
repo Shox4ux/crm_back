@@ -28,6 +28,7 @@ class OrderCreate(BaseModel):
             admin_note=self.admin_note,
             client_note=self.client_note,
             total_amount=self.total_amount,
+            delivery_on=self.delivery_on,
         )
 
 
