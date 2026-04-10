@@ -1,10 +1,21 @@
 from fastapi import APIRouter, status, Depends
 
-from app.utils.custom_exceptions import ItemNotFound
+from app.src.order_product.schema import OrderProCreate
+from app.src.product.schema import ProductBase
+from app.src.warehouse_product.schema import WareProdUpdate
+from app.utils.custom_exceptions import ItemNotFound, ServerError
 from .dao import OrderDao, get_or_dao
 from typing import Optional
-from app.src.order.schema import OrderResponse, OrderBase, OrderCreate, OrderUpdate
+from app.src.order.schema import (
+    OrderResponse,
+    OrderBase,
+    OrderCreate,
+    OrderUpdate,
+)
 from app.src.order_product.dao import OrderProductDao, get_orp_dao
+
+from app.src.warehouse_product.dao import WarehouseProductDao, get_wp_dao
+from app.src.product.dao import ProductDao, get_prod_dao
 
 router = APIRouter(prefix="/orders", tags=["order"])
 
@@ -25,6 +36,8 @@ async def get_all(dao: OrderDao = Depends(get_or_dao)):
 async def create(
     data: OrderCreate,
     dao: OrderDao = Depends(get_or_dao),
+    wp_dao: WarehouseProductDao = Depends(get_wp_dao),
+    p_dao: ProductDao = Depends(get_prod_dao),
     orp_dao: OrderProductDao = Depends(get_orp_dao),
 ):
 
@@ -34,9 +47,40 @@ async def create(
     if not order:
         raise Exception()
 
+    await _reduce_wp_qty(data.order_products, wp_dao, p_dao)
+
     await orp_dao.create(order.id, data.order_products)
 
     return "Successfully created"
+
+
+async def _reduce_wp_qty(
+    items: list[OrderProCreate], wp_dao: WarehouseProductDao, p_dao: ProductDao
+):
+
+    for item in items:
+        wp = await wp_dao.get_one(item.warehouse_product_id)
+        if not wp:
+            raise ItemNotFound(
+                item_id=item.warehouse_product_id, item="warehouse product"
+            )
+        if wp.quantity < item.custom_quantity:
+            raise ServerError(
+                msg=f"Not enough quantity for warehouse product id {item.warehouse_product_id}"
+            )
+
+        await wp_dao.update(
+            id=item.warehouse_product_id,
+            data=WareProdUpdate(quantity=wp.quantity - item.custom_quantity),
+        )
+
+        prod = await p_dao.get_one(wp.product_id)
+        if not prod:
+            raise ItemNotFound(item_id=wp.product_id, item="product")
+        await p_dao.update(
+            id=wp.product_id,
+            data=ProductBase(total_quantity=prod.total_quantity - item.custom_quantity),
+        )
 
 
 @router.patch("/update/{id}", response_model=Optional[OrderBase])
@@ -50,9 +94,7 @@ async def update_status(
     order = await dao.get_one(id)
     if not order:
         raise ItemNotFound(item_id=id, item="order")
-
     order = await dao.update(id, data)
-
     if data.new_order_products:
         await orp_dao.create(order.id, data.new_order_products)
     if data.updated_order_products:
@@ -63,11 +105,3 @@ async def update_status(
             await orp_dao.delete(item_id)
 
     return order
-
-
-@router.delete("/delete/{id}", status_code=status.HTTP_200_OK)
-async def delete(id: int, dao: OrderDao = Depends(get_or_dao)):
-    result = await dao.delete(id)
-    if not result:
-        raise Exception()
-    return {"message": "Successfully deleted"}

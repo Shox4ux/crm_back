@@ -2,12 +2,14 @@ from typing import Optional
 from pydantic import BaseModel
 from datetime import datetime
 from app.src.order.model import Order
+from app.src.order_cancel.schema import OrderCancelResponse
 from app.src.order_product.schema import (
     OrderProCreate,
     OrderProUpdate,
     OrderProdResponse,
 )
 from app.schemas.common_schemas import OrderBase, ClientForOrder
+from app.src.admin.schema import AdminResponse
 
 
 class OrderCreate(BaseModel):
@@ -35,11 +37,11 @@ class OrderCreate(BaseModel):
 class OrderUpdate(BaseModel):
     status: Optional[int] = None
     paid_amount: Optional[float] = None
-    delivery_on: datetime
+    delivery_on: datetime = None
     total_amount: Optional[float] = None
-    new_order_products: Optional[list[OrderProCreate]]
-    updated_order_products: Optional[list[OrderProUpdate]]
-    deleted_order_products: Optional[list[int]]
+    new_order_products: Optional[list[OrderProCreate]] = None
+    updated_order_products: Optional[list[OrderProUpdate]] = None
+    deleted_order_products: Optional[list[int]] = None
     admin_note: Optional[str] = None
     client_note: Optional[str] = None
 
@@ -54,6 +56,7 @@ class OrderResponse(OrderBase):
     delivery_on: datetime
     order_products: Optional[list[OrderProdResponse]]
     client: Optional[ClientForOrder]
+    cancel_info: Optional[OrderCancelResponse]
     created_at: datetime
 
     class Config:

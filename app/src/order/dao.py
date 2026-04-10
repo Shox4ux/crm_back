@@ -1,6 +1,10 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.src.admin.model import Admin
+from app.src.order_cancel.model import OrderCancelInfo
+from app.src.order_cancel.schema import OrderCancelCreate
 from .schema import OrderResponse, OrderCreate, OrderUpdate
 from sqlalchemy import select, update, delete
 from app.src.order.model import Order
@@ -24,6 +28,9 @@ class OrderDao:
                 selectinload(Order.order_products)
                 .selectinload(OrderProduct.warehouse_product)
                 .selectinload(WarehouseProduct.product),
+                selectinload(Order.cancel_info)
+                .selectinload(OrderCancelInfo.canceler)
+                .selectinload(Admin.user),
             )
             .where(Order.id == id)
         )
@@ -43,6 +50,9 @@ class OrderDao:
                     selectinload(WarehouseProduct.warehouse),
                     selectinload(WarehouseProduct.product),
                 ),
+                selectinload(Order.cancel_info)
+                .selectinload(OrderCancelInfo.canceler)
+                .selectinload(Admin.user),
             )
         )
 
@@ -67,6 +77,19 @@ class OrderDao:
         return True
 
     async def update(self, id: int, data: OrderUpdate):
+        result = await self.db.get_one(Order, id)
+        if not result:
+            raise ItemNotFound(item_id=id, item="order")
+
+        for field, value in data.model_dump(exclude_unset=True).items():
+            setattr(result, field, value)
+
+        await self.db.commit()
+        await self.db.refresh(result)
+        return result
+
+    async def cancel(self, id: int, data: OrderCancelCreate):
+
         result = await self.db.get_one(Order, id)
         if not result:
             raise ItemNotFound(item_id=id, item="order")

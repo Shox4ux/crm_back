@@ -1,13 +1,4 @@
-from sqlalchemy import (
-    ForeignKey,
-    String,
-    Column,
-    Integer,
-    Float,
-    DateTime,
-    func,
-    Boolean,
-)
+from sqlalchemy import ForeignKey, String, Column, Integer, Float, DateTime, func
 from sqlalchemy.orm import relationship
 from app.utils import table_names as tbnames
 from app.models.common_col import ComCharModel
@@ -26,6 +17,12 @@ class Order(ComCharModel):
     )
     status = Column(Integer, nullable=False)
     delivery_on = Column(DateTime(timezone=True), default=func.now())
+    cancel_info = relationship(
+        "OrderCancelInfo",
+        uselist=False,
+        back_populates="order",
+        cascade="all, delete-orphan",
+    )
     paid_amount = Column(Float, nullable=False)
     total_amount = Column(Float, nullable=False)
     client_note = Column(String(425), nullable=True)

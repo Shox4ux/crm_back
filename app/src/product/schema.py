@@ -7,13 +7,13 @@ from .model import Product
 
 
 class ProductBase(BaseModel):
-    name: Optional[str]
-    base_price: Optional[float]
-    sell_price: Optional[float]
-    img_url: Optional[str]
-    is_archived: Optional[int]
-    total_quantity: Optional[int]
-    active_quantity: Optional[int]
+    name: Optional[str] = None
+    base_price: Optional[float] = None
+    sell_price: Optional[float] = None
+    img_url: Optional[str] = None
+    is_archived: Optional[int] = None
+    total_quantity: Optional[int] = None
+    active_quantity: Optional[int] = None
 
 
 class ProductUpdate:

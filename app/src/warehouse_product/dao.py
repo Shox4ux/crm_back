@@ -1,7 +1,7 @@
 from app.data.database import get_db
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .schema import WareProdRead, WareProdWrite
+from .schema import WareProdRead, WareProdUpdate, WareProdWrite
 from sqlalchemy import select, update
 from app.src.warehouse_product.model import WarehouseProduct
 from sqlalchemy.orm import selectinload
@@ -12,6 +12,17 @@ class WarehouseProductDao:
 
     def __init__(self, db: AsyncSession):
         self.db: AsyncSession = db
+
+    async def get_by_prod_id(self, prod_id: int) -> WareProdRead | None:
+        result = await self.db.execute(
+            select(WarehouseProduct)
+            .options(
+                selectinload(WarehouseProduct.product),
+                selectinload(WarehouseProduct.warehouse),
+            )
+            .where(WarehouseProduct.product_id == prod_id)
+        )
+        return result.scalar_one_or_none()
 
     async def get_one(self, id: int) -> WareProdRead | None:
         result = await self.db.execute(
@@ -51,7 +62,7 @@ class WarehouseProductDao:
         await self.db.refresh(new)
         return new
 
-    async def update(self, data: WareProdWrite, id: int) -> bool:
+    async def update(self, data: WareProdUpdate, id: int) -> bool:
         stmt = (
             update(WarehouseProduct)
             .where(WarehouseProduct.id == id)
@@ -63,14 +74,6 @@ class WarehouseProductDao:
             raise ItemNotFound(item="payment", item_id=id)
         await self.db.commit()
         return True
-        # result = await self.db.get_one(WarehouseProduct, id)
-        # if not result:
-        #     raise ItemNotFound(item_id=id, item="warehouse product")
-        # for field, value in data.model_dump(exclude_unset=True).items():
-        #     setattr(result, field, value)
-        # await self.db.commit()
-        # await self.db.refresh(result)
-        # return result
 
     async def delete(self, id: int) -> bool:
         result = await self.db.execute(

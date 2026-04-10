@@ -74,7 +74,9 @@ class ProductDao:
         if not result:
             raise ItemNotFound(item_id=id, item="product")
         await self.db.execute(
-            update(Product).where(Product.id == id).values(**data.model_dump())
+            update(Product)
+            .where(Product.id == id)
+            .values(**data.model_dump(exclude_unset=True))
         )
         await self.db.commit()
         await self.db.refresh(result)

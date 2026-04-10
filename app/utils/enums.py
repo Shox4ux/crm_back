@@ -7,7 +7,13 @@ class ProductStatus(IntEnum):
 
 
 class OrderStatus(IntEnum):
-    PROCESSING = 0
-    ONHOLD = 1
-    COMPLETED = 2
-    REJECTED = 3
+    PAID = 0
+    PREPAID = 1
+    UNPAID = 2
+    RETURN = 3
+    REFUND = 4
+
+
+class CancelType(IntEnum):
+    RETURN = 0
+    REFUND = 1

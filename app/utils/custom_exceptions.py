@@ -66,8 +66,8 @@ class TokenExpired(Exception):
 
 
 class ServerError(Exception):
-    def __init__(self):
-        self.message = "Something went wrong, please try again"
+    def __init__(self, msg: str = None):
+        self.message = msg if msg else "Something went wrong, please try again"
         super().__init__(self.message)
 
 

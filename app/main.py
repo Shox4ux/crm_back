@@ -7,6 +7,9 @@ from .src.admin.router import router as admin_router
 from .src.client.router import router as client_router
 from .src.user.router import router as user_router
 from .src.order.router import router as order_router
+from .src.order_cancel.router import router as order_cancel_router
+
+
 from .src.order_product.router import router as order_product_router
 from .src.warehouse_product.router import router as warehouse_product_router
 from .src.product_expense.router import router as product_expense_router
@@ -56,6 +59,7 @@ app.include_router(product_expense_router)
 app.include_router(warehouse_router)
 app.include_router(warehouse_product_router)
 app.include_router(order_router)
+app.include_router(order_cancel_router)
 app.include_router(order_product_router)
 app.include_router(payment_router)
 

@@ -23,6 +23,16 @@ class WareProdWrite(BaseModel):
         from_attributes = True
 
 
+class WareProdUpdate(BaseModel):
+    warehouse_id: Optional[int] = None
+    product_id: Optional[int] = None
+    status: Optional[int] = None
+    quantity: Optional[int] = None
+
+    class Config:
+        from_attributes = True
+
+
 class GlobalWarehouse(BaseModel):
     id: int
     address: str
