@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, Depends
 
 from app.src.order_product.schema import OrderProCreate
 from app.src.product.schema import ProductBase

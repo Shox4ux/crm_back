@@ -62,9 +62,3 @@ app.include_router(order_router)
 app.include_router(order_cancel_router)
 app.include_router(order_product_router)
 app.include_router(payment_router)
-
-
-# if __name__ == "__main__":
-#     import uvicorn
-
-#     uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
