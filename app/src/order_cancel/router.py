@@ -42,8 +42,8 @@ async def create(
     wp_dao: WarehouseProductDao = Depends(get_wp_dao),
 ):
 
-    test = await a_dao.get_one_by_order_id(data.order_id)
-    if test:
+    canceled_ord = await a_dao.get_one_by_order_id(data.order_id)
+    if canceled_ord:
         raise ServerError(msg=f"Order with id {data.order_id} is already canceled")
 
     order = await ord_dao.get_one(data.order_id)

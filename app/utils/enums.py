@@ -15,5 +15,5 @@ class OrderStatus(IntEnum):
 
 
 class CancelType(IntEnum):
-    RETURN = 0
-    REFUND = 1
+    RETURN = 3
+    REFUND = 4
