@@ -1,5 +1,4 @@
 import datetime
-
 from fastapi import APIRouter, Depends
 from app.src.order_product.schema import OrderProCreate
 from app.src.product.schema import ProductBase
@@ -15,7 +14,6 @@ from app.src.order.schema import (
     OrderUpdate,
 )
 from app.src.order_product.dao import OrderProductDao, get_orp_dao
-
 from app.src.warehouse_product.dao import WarehouseProductDao, get_wp_dao
 from app.src.product.dao import ProductDao, get_prod_dao
 
@@ -83,11 +81,12 @@ async def _reduce_wp_qty(
             data=WareProdUpdate(quantity=wp.quantity - item.custom_quantity),
         )
 
-        prod = await p_dao.get_one(wp.product_id)
+        prod = await p_dao.get_one(wp.product.id)
         if not prod:
-            raise ItemNotFound(item_id=wp.product_id, item="product")
+            raise ItemNotFound(item_id=wp.product.id, item="product")
+
         await p_dao.update(
-            id=wp.product_id,
+            id=wp.product.id,
             data=ProductBase(total_quantity=prod.total_quantity - item.custom_quantity),
         )
 
