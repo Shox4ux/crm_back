@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends
-
 from app.src.order_product.schema import OrderProCreate
 from app.src.product.schema import ProductBase
 from app.src.warehouse_product.schema import WareProdUpdate
@@ -40,8 +39,8 @@ async def create(
     p_dao: ProductDao = Depends(get_prod_dao),
     orp_dao: OrderProductDao = Depends(get_orp_dao),
 ):
-
-    print(data.model_dump_json())
+    if not data.order_products:
+        raise ServerError(msg="Order products are required")
 
     order = await dao.create(data)
     if not order:

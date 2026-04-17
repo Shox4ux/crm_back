@@ -36,13 +36,13 @@ async def get_all(dao: OrderCancelInfoDao = Depends(get_cancel_dao)):
 @router.post("/create")
 async def create(
     data: OrderCancelCreate,
-    a_dao: OrderCancelInfoDao = Depends(get_cancel_dao),
+    can_dao: OrderCancelInfoDao = Depends(get_cancel_dao),
     ord_dao: OrderDao = Depends(get_or_dao),
     p_dao: ProductDao = Depends(get_prod_dao),
     wp_dao: WarehouseProductDao = Depends(get_wp_dao),
 ):
 
-    canceled_ord = await a_dao.get_one_by_order_id(data.order_id)
+    canceled_ord = await can_dao.get_one_by_order_id(data.order_id)
     if canceled_ord:
         raise ServerError(msg=f"Order with id {data.order_id} is already canceled")
 
@@ -50,7 +50,7 @@ async def create(
     if not order:
         raise ItemNotFound(item_id=data.order_id, item="order")
 
-    cancel_info = await a_dao.create(OrderCancelInfo(**data.model_dump()))
+    cancel_info = await can_dao.create(OrderCancelInfo(**data.model_dump()))
     if not cancel_info:
         raise Exception()
 
@@ -97,14 +97,68 @@ async def _change_order_status(data: OrderCancelCreate, ord_dao: OrderDao):
     await ord_dao.update(data=OrderUpdate(status=new_status), id=data.order_id)
 
 
+async def _restore_order(
+    cancel_info: OrderCancelInfo,
+    ord_dao: OrderDao,
+    p_dao: ProductDao,
+    wp_dao: WarehouseProductDao,
+):
+    restore_status: int
+    order = await ord_dao.get_one(cancel_info.order_id)
+    if not order:
+        raise ItemNotFound(item_id=cancel_info.order_id, item="order")
+
+    for ord_prod in order.order_products:
+        wp = await wp_dao.get_one(ord_prod.warehouse_product_id)
+
+        if not wp:
+            raise ItemNotFound(
+                item_id=ord_prod.warehouse_product_id, item="warehouse product"
+            )
+
+        await wp_dao.update(
+            id=ord_prod.warehouse_product_id,
+            data=WareProdUpdate(quantity=wp.quantity - ord_prod.custom_quantity),
+        )
+
+        prod = await p_dao.get_one(wp.product.id)
+        if not prod:
+            raise ItemNotFound(item_id=wp.product.id, item="product")
+        await p_dao.update(
+            id=wp.product.id,
+            data=ProductBase(
+                total_quantity=prod.total_quantity - ord_prod.custom_quantity
+            ),
+        )
+
+    if order.delivery_on.date > order.created_at.date:
+        restore_status = OrderStatus.PREPAID.value
+    elif order.total_amount == order.paid_amount:
+        restore_status = OrderStatus.PAID.value
+    else:
+        restore_status = OrderStatus.UNPAID.value
+
+    await ord_dao.update(data=OrderUpdate(status=restore_status), id=order.id)
+
+
 @router.delete("/delete/{id}", status_code=status.HTTP_200_OK)
-async def delete(id: int, dao: OrderCancelInfoDao = Depends(get_cancel_dao)):
-    cancel_info = await dao.get_one(id)
+async def delete(
+    id: int,
+    can_dao: OrderCancelInfoDao = Depends(get_cancel_dao),
+    ord_dao: OrderDao = Depends(get_or_dao),
+    p_dao: ProductDao = Depends(get_prod_dao),
+    wp_dao: WarehouseProductDao = Depends(get_wp_dao),
+):
+
+    cancel_info = await can_dao.get_one(id)
 
     if not cancel_info:
         raise ItemNotFound(item_id=id, item="cancel_info")
 
-    result = await dao.delete(cancel_info)
+    await _restore_order(cancel_info, ord_dao, p_dao, wp_dao)
+
+    result = await can_dao.delete(cancel_info)
     if not result:
         raise Exception()
+
     return {"message": "Successfully deleted"}
