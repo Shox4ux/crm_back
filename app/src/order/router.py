@@ -1,8 +1,11 @@
+import datetime
+
 from fastapi import APIRouter, Depends
 from app.src.order_product.schema import OrderProCreate
 from app.src.product.schema import ProductBase
 from app.src.warehouse_product.schema import WareProdUpdate
 from app.utils.custom_exceptions import ItemNotFound, ServerError
+from app.utils.enums import OrderStatus
 from .dao import OrderDao, get_or_dao
 from typing import Optional
 from app.src.order.schema import (
@@ -47,6 +50,13 @@ async def create(
         raise Exception()
 
     await _reduce_wp_qty(data.order_products, wp_dao, p_dao)
+
+    if data.delivery_on.date() > datetime.datetime.now().date():
+        data.status = OrderStatus.PREPAID.value
+    elif data.paid_amount == data.total_amount:
+        data.status = OrderStatus.PAID.value
+    else:
+        data.status = OrderStatus.UNPAID.value
 
     await orp_dao.create(order.id, data.order_products)
 

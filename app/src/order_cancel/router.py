@@ -131,7 +131,7 @@ async def _restore_order(
             ),
         )
 
-    if order.delivery_on.date > order.created_at.date:
+    if order.delivery_on.date() > order.created_at.date():
         restore_status = OrderStatus.PREPAID.value
     elif order.total_amount == order.paid_amount:
         restore_status = OrderStatus.PAID.value
