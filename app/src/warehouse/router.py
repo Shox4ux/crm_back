@@ -1,8 +1,8 @@
 from fastapi import APIRouter, status, Depends
 from .dao import WarehouseDao, get_w_dao
 
-from warehouse_product.dao import WarehouseProductDao, get_wp_dao
-from product.dao import ProductDao, get_prod_dao
+from app.src.warehouse_product.dao import WarehouseProductDao, get_wp_dao
+from app.src.product.dao import ProductDao, get_prod_dao
 from typing import Optional
 from app.utils.custom_exceptions import ItemNotFound
 from app.src.warehouse.schema import WarehouseRead, WarehouseWrite

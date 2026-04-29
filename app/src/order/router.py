@@ -1,6 +1,5 @@
 from datetime import datetime
 from fastapi import APIRouter, Depends
-from app.src.order.dto import ClientOrdersDTO
 from app.src.order_product.schema import OrderProCreate
 from app.src.product.schema import ProductBase
 from app.src.warehouse_product.schema import WareProdUpdate
