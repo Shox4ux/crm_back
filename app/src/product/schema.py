@@ -7,7 +7,7 @@ from .model import Product
 
 
 class ProductBase(BaseModel):
-    id: int
+    id: Optional[int] = None
     name: Optional[str] = None
     base_price: Optional[float] = None
     sell_price: Optional[float] = None
