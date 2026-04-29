@@ -1,5 +1,6 @@
-import datetime
+from datetime import datetime
 from fastapi import APIRouter, Depends
+from app.src.order.dto import ClientOrdersDTO
 from app.src.order_product.schema import OrderProCreate
 from app.src.product.schema import ProductBase
 from app.src.warehouse_product.schema import WareProdUpdate
@@ -18,6 +19,13 @@ from app.src.warehouse_product.dao import WarehouseProductDao, get_wp_dao
 from app.src.product.dao import ProductDao, get_prod_dao
 
 router = APIRouter(prefix="/orders", tags=["order"])
+
+
+@router.get("/clients/{client_id}/orders")
+async def get_client_orders(
+    client_id: int, start: datetime, end: datetime, dao: OrderDao = Depends(get_or_dao)
+):
+    return await dao.get_client_sales_report_between_dates(client_id, start, end)
 
 
 @router.get("/get_by_id/{id}", response_model=Optional[OrderResponse])

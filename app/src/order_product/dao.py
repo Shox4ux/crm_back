@@ -35,8 +35,8 @@ class OrderProductDao:
         result = await self.db.execute(
             select(OrderProduct).options(
                 selectinload(OrderProduct.warehouse_product).options(
-                    selectinload(WarehouseProduct.product),
-                    selectinload(WarehouseProduct.warehouse),
+                    selectinload(Factory.product),
+                    selectinload(Factory.warehouse),
                 )
             )
         )

@@ -7,6 +7,7 @@ from .model import Product
 
 
 class ProductBase(BaseModel):
+    id: int
     name: Optional[str] = None
     base_price: Optional[float] = None
     sell_price: Optional[float] = None
@@ -72,7 +73,6 @@ class ProductCreate:
 
 
 class ProductSimpleRead(ProductBase):
-    id: int
     created_at: datetime
 
     class Config:
@@ -80,7 +80,6 @@ class ProductSimpleRead(ProductBase):
 
 
 class ProductRead(ProductBase):
-    id: int
     base_expenses: Optional[list[ProdExpRead]]
     created_at: datetime
 
@@ -89,7 +88,6 @@ class ProductRead(ProductBase):
 
 
 class ProductReadWP(ProductBase):
-    id: int
     created_at: datetime
 
     class Config:

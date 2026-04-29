@@ -1,4 +1,4 @@
-from sqlalchemy import String, Column, Float, Integer
+from sqlalchemy import String, Column, Float, Integer, ForeignKey
 from app.utils import table_names as tbnames
 from app.models.common_col import ComCharModel
 from sqlalchemy.orm import relationship
@@ -15,6 +15,8 @@ class Product(ComCharModel):
     measure = Column(Integer, nullable=True)
     total_quantity = Column(Integer, nullable=False)
     active_quantity = Column(Integer, nullable=False)
+    factory_id = Column(Integer, ForeignKey(f"{tbnames.FACTORY}.id"), nullable=True)
+    factory = relationship("Factory", uselist=False, back_populates="products")
     base_expenses = relationship(
         "ProductExpense",
         uselist=True,

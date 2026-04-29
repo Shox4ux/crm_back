@@ -15,6 +15,8 @@ from .src.warehouse_product.router import router as warehouse_product_router
 from .src.product_expense.router import router as product_expense_router
 from .src.auth.router import router as auth_router
 from .src.payment.router import router as payment_router
+from .src.factory.router import router as factory_router
+
 
 from app.settings import Settings
 from app.utils.custom_exceptions import global_exception_handler
@@ -54,6 +56,7 @@ app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(admin_router)
 app.include_router(client_router)
+app.include_router(factory_router)
 app.include_router(product_router)
 app.include_router(product_expense_router)
 app.include_router(warehouse_router)
