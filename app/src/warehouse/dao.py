@@ -59,11 +59,11 @@ class WarehouseDao:
         await self.db.refresh(warehouse)
         return warehouse
 
-    async def delete(self, id: int) -> bool:
-        result = await self.db.execute(select(Warehouse).where(Warehouse.id == id))
-        warehouse = result.scalar_one_or_none()
-        if not warehouse:
-            raise ItemNotFound(item_id=id, item="warehouse")
+    async def delete(self, warehouse: Warehouse) -> bool:
+        # result = await self.db.execute(select(Warehouse).where(Warehouse.id == id))
+        # warehouse = result.scalar_one_or_none()
+        # if not warehouse:
+        #     raise ItemNotFound(item_id=id, item="warehouse")
 
         await self.db.delete(warehouse)
         await self.db.commit()

@@ -1,5 +1,8 @@
 from fastapi import APIRouter, status, Depends
 from .dao import WarehouseDao, get_w_dao
+
+from warehouse_product.dao import WarehouseProductDao, get_wp_dao
+from product.dao import ProductDao, get_prod_dao
 from typing import Optional
 from app.utils.custom_exceptions import ItemNotFound
 from app.src.warehouse.schema import WarehouseRead, WarehouseWrite
@@ -38,8 +41,29 @@ async def update(id: int, data: WarehouseWrite, dao: WarehouseDao = Depends(get_
 
 
 @router.delete("/delete/{id}", status_code=status.HTTP_200_OK)
-async def delete(id: int, dao: WarehouseDao = Depends(get_w_dao)):
-    result = await dao.delete(id)
+async def delete(
+    id: int,
+    dao: WarehouseDao = Depends(get_w_dao),
+    p_dao: ProductDao = Depends(get_prod_dao),
+):
+    warehouse = await dao.get_one(id)
+    if not warehouse:
+        raise ItemNotFound(item_id=id, item="warehouse")
+
+    for wp in warehouse.products:
+        product = await p_dao.get_one(wp.product_id)
+        if not product:
+            raise ItemNotFound(item_id=wp.product_id, item="product")
+
+        if product.active_quantity < wp.quantity:
+            raise Exception(
+                f"Not enough quantity for product {product.name} in warehouse {warehouse.name}"
+            )
+        product.active_quantity -= wp.quantity
+
+        await p_dao.update(product.id, product)
+
+    result = await dao.delete(warehouse)
     if not result:
         raise Exception()
 
