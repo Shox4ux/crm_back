@@ -59,7 +59,7 @@ async def delete(
         ord_pro = await orp_dao.get_ord_pro_by_ware_pro_id(wp.id)
         if ord_pro:
             raise ServerError(
-                msg=f"Cannot delete warehouse {warehouse.name} because it has orders with product {ord_pro.warehouse_product.product.name}"
+                msg=f"Cannot delete warehouse {warehouse.name} because it has orders"
             )
 
         product = await p_dao.get_one(wp.product_id)
