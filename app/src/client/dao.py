@@ -29,8 +29,10 @@ class ClientDao:
                 .selectinload(Order.order_products)
                 .selectinload(OrderProduct.warehouse_product)
                 .options(
-                    selectinload(Factory.product).selectinload(Product.base_expenses),
-                    selectinload(Factory.warehouse),
+                    selectinload(WarehouseProduct.product).selectinload(
+                        Product.base_expenses
+                    ),
+                    selectinload(WarehouseProduct.warehouse),
                 ),
             )
             .where(Client.id == id)
@@ -53,8 +55,10 @@ class ClientDao:
                 .selectinload(Order.order_products)
                 .selectinload(OrderProduct.warehouse_product)
                 .options(
-                    selectinload(Factory.product).selectinload(Product.base_expenses),
-                    selectinload(Factory.warehouse),
+                    selectinload(WarehouseProduct.product).selectinload(
+                        Product.base_expenses
+                    ),
+                    selectinload(WarehouseProduct.warehouse),
                 ),
             )
         )
