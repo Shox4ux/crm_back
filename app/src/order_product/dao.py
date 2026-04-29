@@ -15,6 +15,16 @@ class OrderProductDao:
     def __init__(self, db: AsyncSession):
         self.db: AsyncSession = db
 
+    async def get_ord_pro_by_ware_pro_id(
+        self, ware_pro_id: int
+    ) -> Optional[OrderProdResponse]:
+        result = await self.db.execute(
+            select(OrderProduct)
+            .options(selectinload(OrderProduct.warehouse_product).s)
+            .where(OrderProduct.warehouse_product_id == ware_pro_id)
+        )
+        return result.first()
+
     async def get_one(self, id: int) -> OrderProdResponse | None:
         result = await self.db.execute(
             select(OrderProduct)
