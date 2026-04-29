@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import APIRouter, status, Depends
 from .dao import ClientDao, get_c_dao
 from typing import Optional
@@ -8,6 +9,13 @@ from app.src.user.dao import UserDao, get_user_dao
 from app.utils.img_uploader import img_uploader, delete_image
 
 router = APIRouter(prefix="/clients", tags=["client"])
+
+
+@router.post("/get_client_stats")
+async def get_client_stats(
+    start: datetime, end: datetime, dao: ClientDao = Depends(get_c_dao)
+):
+    return await dao.get_client_stats(start, end)
 
 
 @router.get("/get_by_id/{id}", response_model=Optional[ClientResponse])

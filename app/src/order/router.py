@@ -20,13 +20,6 @@ from app.src.product.dao import ProductDao, get_prod_dao
 router = APIRouter(prefix="/orders", tags=["order"])
 
 
-@router.get("/clients/{client_id}/orders")
-async def get_client_orders(
-    client_id: int, start: datetime, end: datetime, dao: OrderDao = Depends(get_or_dao)
-):
-    return await dao.get_client_sales_report_between_dates(client_id, start, end)
-
-
 @router.get("/get_by_id/{id}", response_model=Optional[OrderResponse])
 async def get_by_id(id: int, dao: OrderDao = Depends(get_or_dao)):
     order_prod = await dao.get_one(id)
